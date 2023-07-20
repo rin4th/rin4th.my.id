@@ -1,5 +1,5 @@
 <button
-	class={`font-heading font-medium ${variant === "ghost" ? "border-none bg-rose-100 text-rose-700" : "shadow-sharp border-solid border-2 border-rose-900 bg-white text-zinc-900"} text-sm no-underline gap-2 py-1 px-2 mt-2 uppercase transition-property-filter duration-200 ease-out cursor-pointer`}
+	class={`font-heading font-medium ${variant === "ghost" ? "border-none bg-cyan-200 text-cyan-900" : "shadow-sharp border-solid border-2 border-cyan-900 bg-white text-zinc-900"} rounded-lg text-sm no-underline gap-2 py-1 px-2 mt-2 mx-1 uppercase transition-property-filter duration-200 ease-out cursor-pointer`}
 	tabindex="0"
 	on:click={() => onClick?.()}
 	on:keydown={(e) => e.key === "Enter" && onClick?.()}

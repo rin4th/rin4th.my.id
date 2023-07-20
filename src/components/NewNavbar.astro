@@ -1,0 +1,79 @@
+---
+import { Icon } from "astro-icon";
+import '../styles/global.css'
+
+type Route = {
+	name: string;
+	path: string;
+	icon: string;
+    status: {
+        active: string;
+        inactive: string;
+    }
+};
+
+const routes: Route[] = [
+	{
+		name: "Home",
+		path: "/",
+		icon: "ic:round-home",
+        status: {
+            active: "text-cyan-200",
+            inactive: "text-white",
+        },
+	},
+	{
+		name: "Post",
+		path: "/posts/",
+		icon: "ic:round-library-books",
+        status: {
+            active: "text-cyan-200",
+            inactive: "text-white",
+        },
+	},
+	{
+		name: "Project",
+		path: "/projects/",
+		icon: "ph:file-code-fill",
+        status: {
+            active: "text-cyan-200",
+            inactive: "text-white",
+        },
+	},
+	{
+		name: "About",
+		path: "/about/",
+		icon: "mdi:about",
+        status: {
+            active: "text-cyan-200",
+            inactive: "text-white",
+        },
+	},
+];
+---
+<nav
+    class="w-60 rounded bg-front-dark"
+>
+    <ul class="p-3 m-0 list-none">
+        {
+            routes.map((route) => {
+                const isRouteActive = Astro.url.pathname === route.path;
+                return (
+                    <li>
+                        <a 
+                            aria-label={route.name} 
+                            href={route.path}
+                            class="no-underline "
+                        >
+                            <div class="text-white px-2 font-bold rounded border-dashed border-white border-2 text-lg mt-2 hover:text-cyan-200">
+                                <div class="flex flex-row gap-x-2">
+                                    <Icon name={route.icon} class={isRouteActive ? route.status.active + " h-7 w-7" : route.status.inactive + " h-7 w-7"} />{route.name}
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                );
+            })
+        }
+    </ul>
+</nav>
