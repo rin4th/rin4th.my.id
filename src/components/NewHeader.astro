@@ -1,0 +1,36 @@
+---
+import data from "~/data/sites";
+import { Image } from "@astrojs/image/components";
+---
+
+<section
+	class="relative grid grid-cols-1 text-center justify-items-center md:text-left md:grid-cols-[20rem_1fr] grid-rows-[14rem_1fr] md:grid-rows-none gap-8 md:gap-4 items-center justify-center text-white max-w-full bg-cyan-800 p-10"
+>
+	<div class="header__left">
+		<a href={data.github}>
+			<Image
+				width={400}
+				height={400}
+				class="w-clamped h-clamped rounded-[10rem]"
+				src="https://avatars.githubusercontent.com/u/52568308?v=4"
+				alt="github profile"
+				loading="eager"
+			/>
+		</a>
+	</div>
+	<div class="relative">
+		<span class="text-xl font-heading font-medium text-white">Hi there!</span>
+		<span
+			class="relative block font-heading text-clamped-lg font-semibold leading-relaxed text-white leading-[1em]"
+		>
+			I'm Rin4th.
+		</span>
+		<span class="block text-clamped-md font-heading leading-relaxed text-white text-2xl">
+			A Software Developer and Cyber Security Enthusiast!
+		</span>
+		<p class="relative block font-serif text-clamped-sm leading-normal mb-4 text-white text-xl">
+			I like to write code and contribute to open source projects, and sometimes write something in this blog. I
+			speak Indonesian, English, and a little bit of Japanese. Feel free to hit me up!
+		</p>
+	</div>
+</section>
