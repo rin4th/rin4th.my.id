@@ -1,5 +1,6 @@
 ---
 import { getCollection } from "astro:content";
+import NewProjectCard from "~/components/NewProjectCard.astro";
 import ProjectCard from "~/components/ProjectCard.astro";
 import MainLayout from "~/layouts/MainLayout.astro";
 
@@ -15,7 +16,7 @@ const sortedAssignmentProjects = assignmentProjects.sort((a, b) => (a.data.date 
 		<a href="/project#personal-projects">
 			<h1
 				id="personal-projects"
-				class="font-heading relative inline-block mb-8 text-3xl font-semibold mb-4 text-zinc-800 before:(content-[] absolute -bottom-1 left-8 right-8 h-1 rounded-md bg-rose-600)"
+				class="font-heading relative inline-block mb-8 text-3xl font-semibold mb-4 text-white before:(content-[] absolute -bottom-1 left-8 right-8 h-1 rounded-md bg-cyan-600)"
 			>
 				Personal Projects
 			</h1>
@@ -23,7 +24,7 @@ const sortedAssignmentProjects = assignmentProjects.sort((a, b) => (a.data.date 
 		<div class="grid grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] gap-5 mb-10">
 			{
 				sortedPersonalProjects.map(({ data: project, slug }) => (
-					<ProjectCard
+					<NewProjectCard
 						title={project.title}
 						imageSource={`/assets/projects/${slug}/cover.webp`}
 						href={`/projects/${slug}`}
@@ -36,12 +37,12 @@ const sortedAssignmentProjects = assignmentProjects.sort((a, b) => (a.data.date 
 		</div>
 		<a href="/project#school-projects">
 			<h1
-				class="font-heading relative inline-block text-3xl font-semibold text-zinc-800 before:(content-[] absolute -bottom-1 left-8 right-8 h-1 rounded-md bg-rose-600)"
+				class="font-heading relative inline-block text-3xl font-semibold text-white before:(content-[] absolute -bottom-1 left-8 right-8 h-1 rounded-md bg-cyan-600)"
 			>
 				School Projects
 			</h1>
 		</a>
-		<p class="font-serif text-zinc-700 text-xl leading-relaxed my-4 text-justify">
+		<p class="font-serif text-white text-xl leading-relaxed my-4 text-justify">
 			These are some projects that I did when I was in high school, not exactly proud of them since I don't like
 			to make these kind of things, they're all just beta software that I don't really care. Guess I'd put them
 			here anyway in case anyone needs them for reference or something.
@@ -49,7 +50,7 @@ const sortedAssignmentProjects = assignmentProjects.sort((a, b) => (a.data.date 
 		<div class="grid grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] gap-5">
 			{
 				sortedAssignmentProjects.map(({ data: project, slug }) => (
-					<ProjectCard
+					<NewProjectCard
 						title={project.title}
 						imageSource={`/assets/projects/${slug}/cover.webp`}
 						href={`/projects/${slug}`}

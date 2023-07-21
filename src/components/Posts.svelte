@@ -1,6 +1,6 @@
 <div class="relative">
 	<input
-		class="block mx-auto my-0 w-full p-3 text-lg border-solid border-2 border-rose-900 shadow-sharp bg-white outline-none font-heading text-rose-900 placeholder:text-zinc-500"
+		class="block my-0 w-full p-2 text-lg rounded bg-white outline-none font-heading text-cyan-900 placeholder:text-zinc-500"
 		id="posts__input"
 		type="text"
 		placeholder="Find post... (start with # to find tags)"
@@ -12,12 +12,12 @@
 	{#if isCompletionVisible}
 		<div
 			transition:fly={{ duration: 100, y: -50 }}
-			class="absolute top-16 left-0 right-0 z-[5] text-rose-900 bg-white p-2 border-solid border-2 border-rose-900 shadow-sharp"
+			class="absolute top-16 left-0 right-0 z-[5] text-cyan-900 bg-white p-2 border-solid border-2 border-cyan-900 shadow-sharp"
 		>
 			{#if uniqueTags.length > 0}
 				{#each uniqueTags as tag}
 					<span
-						class="block text-left font-heading text-lg p-2 cursor-pointer transition-property-all ease-out duration-100 hover:(text-white bg-rose-900)"
+						class="block text-left font-heading text-lg p-2 cursor-pointer transition-property-all ease-out duration-100 hover:(text-white bg-cyan-900)"
 						on:click={() => {
 							tagFilter = [...tagFilter, tag]; // cant use push here
 							if (inputBox !== null) inputBox.value = "";
@@ -40,7 +40,7 @@
 	{/if}
 </div>
 {#if tagFilter.length > 0}
-	<div class="flex items-center gap-4 mt-2 text-zinc-700">
+	<div class="flex items-center gap-4 mt-2 text-white">
 		{#each tagFilter as filter}
 			<Tag onClick={() => { tagFilter = tagFilter.filter((x) => x !== filter); }} variant="solid">
 				{filter}
@@ -50,7 +50,7 @@
 {/if}
 <div class="grid grid-cols-[repeat(auto-fill,minmax(20rem,1fr))] gap-5 mt-4">
 	{#each filteredPosts as post}
-		<PostCard
+		<NewPostCard
 			title={post.title}
 			href={`/posts/${post.slug}`}
 			description={post.description}
@@ -66,6 +66,7 @@
 	import { fly } from "svelte/transition";
 	import type { PostMeta } from "~/models/post";
 	import PostCard from "./PostCard.svelte";
+	import NewPostCard from "./NewPostCard.svelte";
 
 	let inputBox: HTMLInputElement| null = null;
 	let keyword = "";

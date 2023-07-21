@@ -124,11 +124,11 @@ export default defineConfig({
 				"--font-heading": '"Space Grotesk", sans-serif',
 				"--font-serif": '"IBM Plex Serif", serif',
 				"--font-monospace": '"IBM Plex Mono", monospace',
-				"--un-prose-body": theme.colors.zinc[800],
-				"--un-prose-links": theme.colors.rose[700],
-				"--un-prose-headings": theme.colors.zinc[800],
-				"--c-prose-accent": theme.colors.rose[600],
-				"--c-prose-alt-bg": theme.colors.rose[100],
+				"--un-prose-body": theme.colors.white,
+				"--un-prose-links": theme.colors.cyan[200],
+				"--un-prose-headings": theme.colors.white,
+				"--c-prose-accent": theme.colors.cyan[400],
+				"--c-prose-alt-bg": theme.colors.cyan[900],
 				"--c-prose-scrollbar-bg": theme.colors.gray[200],
 				"--c-prose-thumb-bg": theme.colors.gray[300],
 			}),
@@ -139,16 +139,16 @@ export default defineConfig({
 			(_, { theme }) =>
 				`
 				html {
-					color: ${theme.colors.rose[200]} ${theme.colors.rose[600]};
+					color: ${theme.colors.cyan[200]} ${theme.colors.cyan[600]};
 					scroll-padding-top: 2rem;
 				}
 
 				html::-webkit-scrollbar-thumb {
-					background-color: ${theme.colors.rose[600]};
+					background-color: ${theme.colors.cyan[600]};
 				}
 
 				html::-webkit-scrollbar {
-					background-color: ${theme.colors.rose[200]};
+					background-color: ${theme.colors.cyan[200]};
 					width: 0.5rem;
 				}`.replace(/(\s)/g, ""),
 			{ layer: "default" },
@@ -161,8 +161,7 @@ export default defineConfig({
 				return `bg-${c} inline-block
 					mt-8 px-5 py-2
 					text-white font-semibold no-underline font-heading text-lg tracking-wide
-					transition-property-transform ease-out duration-200 transform-gpu
-					shadow-sharp border-solid border-2 border-rose-900
+					transition-property-transform ease-out duration-200 transform-gpu rounded
 					hover:(-translate-y-1.5)
 				`;
 			},
@@ -170,8 +169,8 @@ export default defineConfig({
 		[
 			/^btn-(source|demo)$/,
 			([, kind]) => {
-				const colour = kind === "demo" ? "bg-rose-600 text-white" : "bg-white text-zinc-900";
-				return `${colour} border-solid border-2 border-rose-900 shadow-sharp font-heading no-underline flex items-center gap-2 py-1 px-3 transition-property-filter ease-out duration-200 hover:brightness-90`;
+				const colour = kind === "demo" ? "bg-cyan-600 text-white" : "bg-white text-white";
+				return `${colour}  font-heading no-underline flex items-center gap-2 py-1 px-3 transition-property-filter ease-out duration-200 hover:brightness-90`;
 			},
 		],
 	],
@@ -193,18 +192,18 @@ export default defineConfig({
 			clamped: "clamp(12rem, calc(20vw + 4rem), 16rem)",
 		},
 		boxShadow: {
-			sharp: `0.25rem 0.25rem 0 0 ${colors.rose[900]}`,
+			sharp: `0.25rem 0.25rem 0 0 ${colors.cyan[900]}`,
 		},
 		backgroundImage: {
 			"red-fading-line": `linear-gradient(to right, ${colors.red[500]}, rgba(0, 0, 0, 0))`,
-			"blue-fading-line": `linear-gradient(to right, ${colors.rose[600]}, rgba(0, 0, 0, 0))`,
+			"blue-fading-line": `linear-gradient(to right, ${colors.cyan[600]}, rgba(0, 0, 0, 0))`,
 		},
 	},
 	preflights: [
 		{
 			getCSS: ({ theme }) => `
 			*::selection {
-				background-color: ${theme.colors.zinc[800]};
+				background-color: ${theme.colors.white};
 				color: ${theme.colors.white};
 			}`,
 		},

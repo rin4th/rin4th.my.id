@@ -50,13 +50,13 @@ const commentOptions = {
 </style>
 
 <MainLayout seo={{ title: frontmatter.title }}>
-	<section class="max-w-screen-lg py-4 px-8 mx-auto text-center text-zinc-600">
+	<section class="max-w-screen-lg py-4 px-8 mx-auto text-center text-white">
 		<h1
-			class="font-heading text-5xl uppercase max-w-[30ch] mt-12 mx-auto mb-0 font-semibold text-zinc-800 leading-snug"
+			class="font-heading text-5xl uppercase max-w-[30ch] mt-12 mx-auto mb-0 font-semibold text-gray-200 leading-snug"
 		>
 			{frontmatter.title}
 		</h1>
-		<span class="font-heading block text-center text-lg leading-loose text-zinc-600">
+		<span class="font-heading block text-center text-lg leading-loose text-white">
 			Posted on
 			{
 				new Date(frontmatter.date).toLocaleDateString("en-GB", {
@@ -68,7 +68,7 @@ const commentOptions = {
 			}
 		</span>
 		<a
-			class="relative block font-heading text-center text-lg leading-loose no-underline text-rose-600 hover:underline"
+			class="relative block font-heading text-center text-lg leading-loose no-underline text-cyan-300 hover:underline"
 			href={`https://github.com/elianiva/elianiva.my.id/blob/master/src/content/posts/${slug}.mdx`}
 			target="_blank"
 			rel="norel noreferrer">Suggest An Edit</a

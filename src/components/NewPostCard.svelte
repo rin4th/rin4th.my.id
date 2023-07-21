@@ -1,4 +1,4 @@
-<div class="max-w-sm rounded overflow-hidden shadow-lg bg-stone-700 ">
+<div class="text-left rounded z-[2] overflow-hidden shadow-lg bg-stone-700 ">
   <a
 		rel="prefetch"
         {href}

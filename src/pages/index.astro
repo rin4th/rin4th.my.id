@@ -15,7 +15,13 @@ const sortedProjects = projects.sort((a, b) => (a.data.date > b.data.date ? -1 :
 <MainLayout seo={{ title: "Home" }}>
 	<main class="max-w-full my-0 p-0 z-[2]">
 		<NewHeader />
-		<Section title="Recent Posts" data={sortedPosts} buttonText="More Posts" url="/posts/" type="post" />
+		<Section 
+			title="Recent Posts" 
+			data={sortedPosts} 
+			buttonText="More Posts" 
+			url="/posts/" 
+			type="post" 
+		/>
 		<Section
 			title="Recent Projects"
 			data={sortedProjects}
