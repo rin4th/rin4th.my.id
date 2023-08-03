@@ -169,7 +169,7 @@ export default defineConfig({
 		[
 			/^btn-(source|demo)$/,
 			([, kind]) => {
-				const colour = kind === "demo" ? "bg-cyan-600 text-white" : "bg-white text-white";
+				const colour = kind === "demo" ? "bg-cyan-600 text-white" : "bg-gray-200 text-cyan-600";
 				return `${colour}  font-heading no-underline flex items-center gap-2 py-1 px-3 transition-property-filter ease-out duration-200 hover:brightness-90`;
 			},
 		],

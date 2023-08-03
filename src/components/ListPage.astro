@@ -1,5 +1,4 @@
 ---
-import { Icon } from "astro-icon";
 import '../styles/global.css'
 
 type Route = {
@@ -63,24 +62,24 @@ const routes: Route[] = [
 <nav
     class="min-w-60 rounded bg-front-dark mb-5 min-h-full"
 >
+    <div class="text-white text-center">
+        List Pages
+    </div>
     <ul class="p-3 m-0 list-none">
         {
             routes.map((route) => {
-                const isRouteActive = Astro.url.pathname === route.path;
                 return (
-                    <li>
-                        <a 
-                            aria-label={route.name} 
-                            href={route.path}
-                            class="no-underline "
-                        >
-                            <div class="text-white px-2 font-bold rounded border-dashed border-white border-2 text-lg mt-2 hover:text-cyan-200">
-                                <div class="flex flex-row gap-x-2">
-                                    <Icon name={route.icon} class={isRouteActive ? route.status.active + " h-7 w-7" : route.status.inactive + " h-7 w-7"} />{route.name}
+                    <a 
+                        aria-label={route.name} 
+                        href={route.path}
+                        class="no-underline "
+                            >
+                        <li class="list-outside">
+                                <div class="text-white px-2 font-bold text-md mt-2 hover:text-cyan-200">
+                                    
                                 </div>
-                            </div>
-                        </a>
-                    </li>
+                        </li>
+                    </a>
                 );
             })
         }

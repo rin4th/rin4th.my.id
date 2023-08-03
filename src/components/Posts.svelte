@@ -65,7 +65,6 @@
 	import Tag from "~/components/Tag.svelte";
 	import { fly } from "svelte/transition";
 	import type { PostMeta } from "~/models/post";
-	import PostCard from "./PostCard.svelte";
 	import NewPostCard from "./NewPostCard.svelte";
 
 	let inputBox: HTMLInputElement| null = null;

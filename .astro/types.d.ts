@@ -198,7 +198,30 @@ declare module 'astro:content' {
 	>;
 
 	type ContentEntryMap = {
-		"posts": {
+		"books": {
+"buku_1/2bwm.mdx": {
+	id: "buku_1/2bwm.mdx";
+  slug: "buku_1/2bwm";
+  body: string;
+  collection: "books";
+  data: InferEntrySchema<"books">
+} & { render(): Render[".mdx"] };
+"buku_1/a-year-of-japanese.mdx": {
+	id: "buku_1/a-year-of-japanese.mdx";
+  slug: "buku_1/a-year-of-japanese";
+  body: string;
+  collection: "books";
+  data: InferEntrySchema<"books">
+} & { render(): Render[".mdx"] };
+"buku_1/combining-adonis-and-svelte-using-inertia.mdx": {
+	id: "buku_1/combining-adonis-and-svelte-using-inertia.mdx";
+  slug: "buku_1/combining-adonis-and-svelte-using-inertia";
+  body: string;
+  collection: "books";
+  data: InferEntrySchema<"books">
+} & { render(): Render[".mdx"] };
+};
+"posts": {
 "2bwm.mdx": {
 	id: "2bwm.mdx";
   slug: "2bwm";

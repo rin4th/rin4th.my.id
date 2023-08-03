@@ -6,8 +6,6 @@ export type Props = {
 	imageSource: string;
 	description: string;
 	href: string;
-	demo: string | null;
-	source: string;
 };
 
 const props = Astro.props as Props;
@@ -41,18 +39,9 @@ const props = Astro.props as Props;
 						target="_blank"
 						rel="norel noreferrer"
 					>
-						<Icon class="w-6 h-6" name="ph:globe" /> Visit
 					</a>
 				)
 			}
-			<a
-				class="font-heading no-underline flex items-center gap-2 py-1 px-2 transition-[filter_ease-out_0.2s] text-white hover:text-gray-200"
-				href={props.source}
-				target="_blank"
-				rel="norel noreferrer"
-			>
-				<Icon class="w-6 h-6" name="fe:github" /> Source
-			</a>
 		</div>
 		</a>
 	</div>

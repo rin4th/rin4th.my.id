@@ -22,7 +22,18 @@ const projectCollection = defineCollection({
 	}),
 });
 
+const bookCollection = defineCollection({
+	schema: z.object({
+		draft: z.boolean().optional().default(false),
+		title: z.string(),
+		date: z.coerce.date(),
+		description: z.string(),
+		page: z.number().positive(),
+	}),
+});
+
 export const collections = {
 	projects: projectCollection,
 	posts: postCollection,
+	books: bookCollection,
 };

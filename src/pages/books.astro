@@ -1,0 +1,38 @@
+---
+import { getCollection } from "astro:content";
+import BookCard from "~/components/BookCard.astro";
+import MainLayout from "~/layouts/MainLayout.astro";
+
+const books = await getCollection("books", ({ data }) => !data.draft);
+const sortedBooks = books.sort((a, b) => (a.data.date > b.data.date ? -1 : 1));
+---
+
+<MainLayout seo={{ title: "Books" }}>
+	<section class="max-w-[1080px] mx-auto pt-8 px-4 pb-0 text-center">
+		<a href="/project#personal-projects">
+			<h1
+				id="personal-projects"
+				class="font-heading relative inline-block mb-8 text-3xl font-semibold mb-4 text-white before:(content-[] absolute -bottom-1 left-8 right-8 h-1 rounded-md bg-cyan-600)"
+			>
+				Books
+			</h1>
+		</a>
+		<p class="font-serif text-white text-xl leading-relaxed my-4 text-justify">
+			These are some projects that I did when I was in high school, not exactly proud of them since I don't like
+			to make these kind of things, they're all just beta software that I don't really care. Guess I'd put them
+			here anyway in case anyone needs them for reference or something.
+		</p>
+		<div class="grid grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] gap-5 mb-10">
+			{
+				sortedBooks.map(({ data: book, slug }) => (
+					<BookCard
+						title={book.title}
+						imageSource={`/assets/books/${slug}/cover.webp`}
+						href={`/books/${slug}`}
+						description={book.description}
+					/>
+				))
+			}
+		</div>
+	</section>
+</MainLayout>
