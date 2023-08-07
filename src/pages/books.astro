@@ -1,10 +1,17 @@
 ---
-import { getCollection } from "astro:content";
+
+const books = await Astro.glob("../content/books/**/*.mdx");
 import BookCard from "~/components/BookCard.astro";
 import MainLayout from "~/layouts/MainLayout.astro";
 
-const books = await getCollection("books", ({ data }) => !data.draft);
-const sortedBooks = books.sort((a, b) => (a.data.date > b.data.date ? -1 : 1));
+const groupBookFolder = books.reduce((group, book) => {
+	const arrPath = book.url.split("/");
+	const folder = arrPath[3];
+	if (!group[folder]) group[folder] = [];
+	group[folder].push(book);
+	return group;
+}, {});
+
 ---
 
 <MainLayout seo={{ title: "Books" }}>
@@ -24,6 +31,31 @@ const sortedBooks = books.sort((a, b) => (a.data.date > b.data.date ? -1 : 1));
 		</p>
 		<div class="grid grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] gap-5 mb-10">
 			{
+				Object.entries(groupBookFolder).map(([folder, books]) => {
+					const sortedBookBasedOnPage = books.sort((a, b) => {
+						const aPage = a.frontmatter.page;
+						const bPage = b.frontmatter.page;
+						if (aPage < bPage) return -1;
+						if (aPage > bPage) return 1;
+						return 0;
+					});
+					const book = sortedBookBasedOnPage[0];
+					return (
+						<BookCard
+							title={book.frontmatter.title}
+							imageSource={`/assets/books/${folder}/cover.webp`}
+							href={`/books/${folder}/${book.slug}`}
+							description={book.frontmatter.description}
+						/>
+					)
+				})
+			}
+		</div>
+
+		
+
+		<!-- <div class="grid grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] gap-5 mb-10">
+			{
 				sortedBooks.map(({ data: book, slug }) => (
 					<BookCard
 						title={book.title}
@@ -33,6 +65,6 @@ const sortedBooks = books.sort((a, b) => (a.data.date > b.data.date ? -1 : 1));
 					/>
 				))
 			}
-		</div>
+		</div> -->
 	</section>
 </MainLayout>

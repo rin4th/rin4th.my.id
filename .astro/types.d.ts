@@ -220,6 +220,20 @@ declare module 'astro:content' {
   collection: "books";
   data: InferEntrySchema<"books">
 } & { render(): Render[".mdx"] };
+"buku_2/combining-adonis-and-svelte-using-inertia.mdx": {
+	id: "buku_2/combining-adonis-and-svelte-using-inertia.mdx";
+  slug: "buku_2/combining-adonis-and-svelte-using-inertia";
+  body: string;
+  collection: "books";
+  data: InferEntrySchema<"books">
+} & { render(): Render[".mdx"] };
+"buku_2/defx-nvim.mdx": {
+	id: "buku_2/defx-nvim.mdx";
+  slug: "buku_2/defx-nvim";
+  body: string;
+  collection: "books";
+  data: InferEntrySchema<"books">
+} & { render(): Render[".mdx"] };
 };
 "posts": {
 "2bwm.mdx": {

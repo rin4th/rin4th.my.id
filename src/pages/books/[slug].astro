@@ -1,17 +1,24 @@
 ---
-import { CollectionEntry, getCollection } from "astro:content";
 import BookLayout from "~/layouts/BookLayout.astro";
 
+const books = await Astro.glob("../content/books/**/*.mdx");
+const groupBookFolder = books.reduce((group, book) => {
+	const arrPath = book.url.split("/");
+	const folder = arrPath[3];
+	if (!group[folder]) group[folder] = [];
+	group[folder].push(book);
+	return group;
+}, {});
+
 export async function getStaticPaths() {
-	const postEntries = await getCollection("books");
-	return postEntries.map((entry) => ({
-		params: { slug: entry.slug },
-		props: { entry },
+	const bookEntries = Object.keys(groupBookFolder).map((folder) => ({
+		params: { slug: folder },
+		props: { books: groupBookFolder[folder] },
 	}));
 }
 
 type Props = {
-	entry: CollectionEntry<"books">;
+	entry: CollectionEntry<"post">;
 };
 
 const { entry } = Astro.props;
