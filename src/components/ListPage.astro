@@ -23,8 +23,14 @@ const groupBookFolder = books.reduce((group, book) => {
 
 const currentBook = Astro.url.pathname.split("/")[2];
 const chooseBook = groupBookFolder[currentBook];
-
-const routes: Route[] = Object.entries(chooseBook).map(([_, book]) => {
+const sortedBookBasedOnPage = chooseBook.sort((a, b) => {
+    const aPage = a.frontmatter.page;
+    const bPage = b.frontmatter.page;
+    if (aPage < bPage) return -1;
+    if (aPage > bPage) return 1;
+    return 0;
+})
+const routes: Route[] = Object.entries(sortedBookBasedOnPage).map(([_, book]) => {
     
     return {
         name: book.frontmatter.title,
