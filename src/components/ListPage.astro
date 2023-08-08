@@ -1,5 +1,8 @@
 ---
 import '../styles/global.css'
+const books = await Astro.glob("../content/books/**/*.mdx");
+
+
 
 type Route = {
 	name: string;
@@ -10,61 +13,40 @@ type Route = {
     }
 };
 
+const groupBookFolder = books.reduce((group, book) => {
+	const arrPath = book.url.split("/");
+	const folder = arrPath[3];
+	if (!group[folder]) group[folder] = [];
+	group[folder].push(book);
+	return group;
+}, {});
 
-const routes: Route[] = [
-	{
-		name: "Home",
-		path: "/",
-		icon: "ic:round-home",
+const currentBook = Astro.url.pathname.split("/")[2];
+const chooseBook = groupBookFolder[currentBook];
+
+const routes: Route[] = Object.entries(chooseBook).map(([_, book]) => {
+    
+    return {
+        name: book.frontmatter.title,
+        path: "/books/" + currentBook + "/" + book.url.split("/")[4].replace(".mdx", ""),
         status: {
             active: "text-cyan-200",
-            inactive: "text-white",
-        },
-	},
-	{
-		name: "Post",
-		path: "/posts/",
-		icon: "ic:baseline-article",
-        status: {
-            active: "text-cyan-200",
-            inactive: "text-white",
-        },
-	},
-	{
-		name: "Project",
-		path: "/projects/",
-		icon: "ph:file-code-fill",
-        status: {
-            active: "text-cyan-200",
-            inactive: "text-white",
-        },
-	},
-    {
-        name: "Book",
-        path: "/books/",
-        icon: "ic:round-library-books",
-        status: {
-            active: "text-cyan-200",
-            inactive: "text-white",
-        },
-    },
-	{
-		name: "About",
-		path: "/about/",
-		icon: "mdi:about",
-        status: {
-            active: "text-cyan-200",
-            inactive: "text-white",
-        },
-	},
-];
+            inactive: "text-white"
+        }
+    };
+});
+
+
+
+
 ---
 <nav
     class="min-w-60 rounded bg-front-dark mb-5 min-h-full"
 >
-    <div class="text-white text-center">
+    <div class="text-white text-center p-5">
         List Pages
     </div>
+    <!-- <h1>{typeof chooseBook}</h1> -->
     <ul class="p-3 m-0 list-none">
         {
             routes.map((route) => {
@@ -76,7 +58,7 @@ const routes: Route[] = [
                             >
                         <li class="list-outside">
                                 <div class="text-white px-2 font-bold text-md mt-2 hover:text-cyan-200">
-                                    
+                                    {route.name}
                                 </div>
                         </li>
                     </a>
