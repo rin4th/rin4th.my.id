@@ -11,6 +11,18 @@ export type Props = {
 	slug: string;
 };
 
+function getIndentPadding(depth: number) {
+	// prettier-ignore
+	switch (depth) {
+		case 1: return "";
+		case 2: return "pl-4";
+		case 3: return "pl-8";
+		case 4: return "pl-12";
+		case 5: return "pl-16";
+		default: return "";
+	  }
+}
+
 const { frontmatter, slug, ...props } = Astro.props as Props;
 
 const commentOptions = {

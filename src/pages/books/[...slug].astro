@@ -1,0 +1,29 @@
+---
+import { CollectionEntry } from "astro:content";
+import BookLayout from "~/layouts/BookLayout.astro";
+
+export async function getStaticPaths() {
+  const books = await Astro.glob("../../content/books/**/*.mdx");
+  
+  const paths = books.map((book) => {
+    const slug = book.url.split("/").slice(3).join('/');
+    return {
+      params: { slug },
+      props: { entry: book },
+      };
+  });
+
+  return paths;
+}
+type Props = {
+	entry: CollectionEntry<"books">;
+};
+
+const { entry } = Astro.props;
+const { Content, headings } = await entry.render();
+---
+
+<BookLayout frontmatter={entry.data} headings={headings} slug={entry.slug}>
+	<Content />
+</BookLayout>
+

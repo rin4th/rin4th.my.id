@@ -1,5 +1,4 @@
 ---
-
 const books = await Astro.glob("../content/books/**/*.mdx");
 import BookCard from "~/components/BookCard.astro";
 import MainLayout from "~/layouts/MainLayout.astro";
@@ -11,6 +10,7 @@ const groupBookFolder = books.reduce((group, book) => {
 	group[folder].push(book);
 	return group;
 }, {});
+
 
 ---
 
@@ -44,7 +44,7 @@ const groupBookFolder = books.reduce((group, book) => {
 						<BookCard
 							title={book.frontmatter.title}
 							imageSource={`/assets/books/${folder}/cover.webp`}
-							href={`/books/${folder}/${book.slug}`}
+							href={`/books/${folder}/${book.frontmatter.slug}`}
 							description={book.frontmatter.description}
 						/>
 					)
