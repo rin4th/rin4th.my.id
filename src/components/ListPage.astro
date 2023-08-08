@@ -41,29 +41,30 @@ const routes: Route[] = Object.entries(chooseBook).map(([_, book]) => {
 
 ---
 <nav
-    class="min-w-60 rounded bg-front-dark mb-5 min-h-full"
+    class="min-w-60 rounded bg-front-dark min-h-full py-2"
 >
-    <div class="text-white text-center p-5">
-        List Pages
+    <div class="mx-2 rounded border-dashed border-2 text-white">
+        <div class="text-white text-center p-5 pb-1 text-">
+            List Pages
+        </div>
+        <ul class="p-3 m-0 list-none ">
+            {
+                routes.map((route) => {
+                    return (
+                        <a 
+                            aria-label={route.name} 
+                            href={route.path}
+                            class="no-underline"
+                                >
+                            <li class="list-outside  text-white">
+                                    <div class="text-white px-2 text-sm font-medium border-dashed border-0 border-b-2 mt-2 hover:text-cyan-200">
+                                        + {route.name}
+                                    </div>
+                            </li>
+                        </a>
+                    );
+                })
+            }
+        </ul>
     </div>
-    <!-- <h1>{typeof chooseBook}</h1> -->
-    <ul class="p-3 m-0 list-none">
-        {
-            routes.map((route) => {
-                return (
-                    <a 
-                        aria-label={route.name} 
-                        href={route.path}
-                        class="no-underline "
-                            >
-                        <li class="list-outside">
-                                <div class="text-white px-2 font-bold text-md mt-2 hover:text-cyan-200">
-                                    {route.name}
-                                </div>
-                        </li>
-                    </a>
-                );
-            })
-        }
-    </ul>
 </nav>
