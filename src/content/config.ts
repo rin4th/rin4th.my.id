@@ -31,7 +31,6 @@ const bookCollection = defineCollection({
 		page: z.number().positive(),
 		status: z.string(),
 		tags: z.array(z.string()),
-		slug: z.string(),
 	}),
 });
 

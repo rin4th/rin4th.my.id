@@ -44,7 +44,7 @@ const groupBookFolder = books.reduce((group, book) => {
 						<BookCard
 							title={book.frontmatter.title}
 							imageSource={`/assets/books/${folder}/cover.webp`}
-							href={`/books/${folder}/${book.frontmatter.slug}`}
+							href={`/books/${folder}/${book.url.split("/")[4].replace(".mdx", "")}`}
 							description={book.frontmatter.description}
 						/>
 					)
