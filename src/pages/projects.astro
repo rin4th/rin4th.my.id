@@ -1,6 +1,5 @@
 ---
 import { getCollection } from "astro:content";
-import NewProjectCard from "~/components/NewProjectCard.astro";
 import ProjectCard from "~/components/ProjectCard.astro";
 import MainLayout from "~/layouts/MainLayout.astro";
 
@@ -24,7 +23,7 @@ const sortedAssignmentProjects = assignmentProjects.sort((a, b) => (a.data.date 
 		<div class="grid grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] gap-5 mb-10">
 			{
 				sortedPersonalProjects.map(({ data: project, slug }) => (
-					<NewProjectCard
+					<ProjectCard
 						title={project.title}
 						imageSource={`/assets/projects/${slug}/cover.webp`}
 						href={`/projects/${slug}`}
@@ -50,7 +49,7 @@ const sortedAssignmentProjects = assignmentProjects.sort((a, b) => (a.data.date 
 		<div class="grid grid-cols-[repeat(auto-fit,minmax(20rem,1fr))] gap-5">
 			{
 				sortedAssignmentProjects.map(({ data: project, slug }) => (
-					<NewProjectCard
+					<ProjectCard
 						title={project.title}
 						imageSource={`/assets/projects/${slug}/cover.webp`}
 						href={`/projects/${slug}`}

@@ -12,7 +12,6 @@ import "@fontsource/ibm-plex-serif/400.css";
 import "@fontsource/ibm-plex-mono/400.css";
 import "@fontsource/ibm-plex-mono/500.css";
 import "@fontsource/ibm-plex-mono/400-italic.css";
-import NewNavbar from "~/components/NewNavbar.astro";
 
 export interface Props {
 	seo: SEOProps;
@@ -29,7 +28,7 @@ const { seo } = Astro.props
 	<body class="bg-more-dark">
 		<div class="sm:m-10 flex flex-row justify-items-start auto-cols-max custom-scrollbar sm:gap-3">
 			<aside class="inset-y-1 sticky self-start lg:block">	
-				<NewNavbar />
+				<Navbar />
 				<slot name="sidebar" />
 			</aside>
 			<main class="sm:p-5 bg-front-dark rounded min-h-fit w-full">

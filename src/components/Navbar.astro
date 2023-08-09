@@ -1,74 +1,88 @@
 ---
 import { Icon } from "astro-icon";
+import '../styles/global.css'
 
 type Route = {
 	name: string;
 	path: string;
-	icon: {
-		inactive: string;
-		active: string;
-	};
+	icon: string;
+    status: {
+        active: string;
+        inactive: string;
+    }
 };
 
 const routes: Route[] = [
 	{
 		name: "Home",
 		path: "/",
-		icon: {
-			active: "fluent:home-16-filled",
-			inactive: "fluent:home-16-regular",
-		},
+		icon: "ic:round-home",
+        status: {
+            active: "text-cyan-200",
+            inactive: "text-white",
+        },
 	},
 	{
 		name: "Post",
 		path: "/posts/",
-		icon: {
-			active: "fluent:book-20-filled",
-			inactive: "fluent:book-20-regular",
-		},
+		icon: "ic:baseline-article",
+        status: {
+            active: "text-cyan-200",
+            inactive: "text-white",
+        },
 	},
 	{
 		name: "Project",
 		path: "/projects/",
-		icon: {
-			active: "fluent:clipboard-code-16-filled",
-			inactive: "fluent:clipboard-code-16-regular",
-		},
+		icon: "ph:file-code-fill",
+        status: {
+            active: "text-cyan-200",
+            inactive: "text-white",
+        },
 	},
+    {
+        name: "Book",
+        path: "/books/",
+        icon: "ic:round-library-books",
+        status: {
+            active: "text-cyan-200",
+            inactive: "text-white",
+        },
+    },
 	{
 		name: "About",
 		path: "/about/",
-		icon: {
-			active: "fluent:info-16-filled",
-			inactive: "fluent:info-16-regular",
-		},
+		icon: "mdi:about",
+        status: {
+            active: "text-cyan-200",
+            inactive: "text-white",
+        },
 	},
 ];
 ---
-
 <nav
-	class="fixed bottom-4 left-10 right-10 h-14 md:(top-4 h-14 w-72 left-1/2 -translate-x-1/2) bg-white shadow-sharp border-solid border-2 border-rose-900 z-30"
+    class="min-w-60 rounded bg-front-dark mb-5 min-h-full"
 >
-	<div class="h-full flex md:w-full items-center justify-center max-w-screen-lg mx-auto">
-		<ul class="p-0 list-none flex gap-10 items-center justify-center">
-			{
-				routes.map((route) => {
-					const isRouteActive = Astro.url.pathname === route.path;
-					return (
-						<li>
-							<a
-								class={`relative flex flex-col gap-1 items-center justify-center hover:text-rose-600 text-lg leading-relaxed no-underline font-serif transition-[color] duration-100 ease-out ${
-									isRouteActive ? "text-rose-600" : "text-zinc-700"
-								}`}
-								aria-label={route.name}
-								href={route.path}
-							>
-								<Icon name={isRouteActive ? route.icon.active : route.icon.inactive} class="w-6 h-6" />
-							</a>
-						</li>
-					);
-				})
-			}
-		</ul>
-	</div>
+    <ul class="p-3 m-0 list-none">
+        {
+            routes.map((route) => {
+                const isRouteActive = Astro.url.pathname === route.path;
+                return (
+                    <li>
+                        <a 
+                            aria-label={route.name} 
+                            href={route.path}
+                            class="no-underline "
+                        >
+                            <div class="text-white px-2 font-bold rounded border-dashed border-white border-2 text-lg mt-2 hover:text-cyan-200">
+                                <div class="flex flex-row gap-x-2">
+                                    <Icon name={route.icon} class={isRouteActive ? route.status.active + " h-7 w-7" : route.status.inactive + " h-7 w-7"} />{route.name}
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                );
+            })
+        }
+    </ul>
 </nav>

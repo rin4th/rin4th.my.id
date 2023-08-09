@@ -50,7 +50,7 @@
 {/if}
 <div class="grid grid-cols-[repeat(auto-fill,minmax(20rem,1fr))] gap-5 mt-4">
 	{#each filteredPosts as post}
-		<NewPostCard
+		<PostCard
 			title={post.title}
 			href={`/posts/${post.slug}`}
 			description={post.description}
@@ -65,7 +65,7 @@
 	import Tag from "~/components/Tag.svelte";
 	import { fly } from "svelte/transition";
 	import type { PostMeta } from "~/models/post";
-	import NewPostCard from "./NewPostCard.svelte";
+	import PostCard from "./PostCard.svelte";
 
 	let inputBox: HTMLInputElement| null = null;
 	let keyword = "";
