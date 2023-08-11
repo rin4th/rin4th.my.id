@@ -8,7 +8,7 @@ import image from "@astrojs/image";
 // https://astro.build/config
 export default defineConfig({
 	integrations: [Unocss(), svelte(), mdx(), image({ serviceEntryPoint: "@astrojs/image/sharp" })],
-	site: "https://elianiva.my.id",
+	site: "https://rin4th.my.id",
 	vite: {
 		resolve: {
 			alias: {
