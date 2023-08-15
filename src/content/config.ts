@@ -27,10 +27,8 @@ const bookCollection = defineCollection({
 		draft: z.boolean().optional().default(false),
 		title: z.string(),
 		date: z.coerce.date(),
-		description: z.string(),
+		description: z.string().optional(),
 		page: z.number().positive(),
-		status: z.string(),
-		tags: z.array(z.string()),
 	}),
 });
 

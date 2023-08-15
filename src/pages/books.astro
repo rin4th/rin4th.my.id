@@ -42,7 +42,7 @@ const groupBookFolder = books.reduce((group, book) => {
 					const book = sortedBookBasedOnPage[0];
 					return (
 						<BookCard
-							title={book.frontmatter.title}
+							title={folder}
 							imageSource={`/assets/books/${folder}/cover.webp`}
 							href={`/books/${folder}/${book.url.split("/")[4].replace(".mdx", "")}`}
 							description={book.frontmatter.description}
