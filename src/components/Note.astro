@@ -1,0 +1,19 @@
+---
+export type Props = {
+	date: string;
+};
+
+---
+
+<section
+	class="bg-white border-1 border-gray-200 border-l-3 border-l-cyan-600"
+>
+	<div
+		class="py-2 px-4 bg-gray-200 text-slate-600 font-heading flex items-center justify-between"
+	>
+		<span class="font-semibold">Note</span>
+	</div>
+	<div class="p-4 text-slate-600 bg-white font-lg leading-relaxed">
+		<slot />
+	</div>
+</section>

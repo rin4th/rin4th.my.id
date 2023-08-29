@@ -234,6 +234,13 @@ declare module 'astro:content' {
   collection: "books";
   data: InferEntrySchema<"books">
 } & { render(): Render[".mdx"] };
+"godoc/go-basic.mdx": {
+	id: "godoc/go-basic.mdx";
+  slug: "godoc/go-basic";
+  body: string;
+  collection: "books";
+  data: InferEntrySchema<"books">
+} & { render(): Render[".mdx"] };
 "godoc/introduction.mdx": {
 	id: "godoc/introduction.mdx";
   slug: "godoc/introduction";
