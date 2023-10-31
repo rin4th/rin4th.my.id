@@ -22,7 +22,7 @@ const { frontmatter, slug } = Astro.props as Props;
 		class="max-w-screen-lg grid grid-cols-[2fr_1fr] grid-rows-[repeat(3,minmax(min-content,max-content))] grid-flow-row-dense items-start my-8 mx-auto px-4 gap-4"
 	>
 		<div class="col-start-1 col-end-3 md:col-start-1 md:col-end-2 w-full">
-			<div class="overflow-hidden border-solid border-2 border-cyan-900 shadow-sharp">
+			<div class="overflow-hidden rounded border-solid border-2 border-cyan-900">
 				<img
 					src={`/assets/projects/${slug}/cover.webp`}
 					alt={frontmatter.title}
@@ -39,12 +39,12 @@ const { frontmatter, slug } = Astro.props as Props;
 				<div class="flex gap-2">
 					{
 						frontmatter.demo !== null && (
-							<a class="btn-demo" href={frontmatter.demo} target="_blank" rel="norel noreferrer">
+							<a class="btn-demo rounded" href={frontmatter.demo} target="_blank" rel="norel noreferrer">
 								<Icon name="ph:globe" class="w-6 h-6" /> Demo
 							</a>
 						)
 					}
-					<a class="btn-source" href={frontmatter.source} target="_blank" rel="norel noreferrer">
+					<a class="btn-source rounded" href={frontmatter.source} target="_blank" rel="norel noreferrer">
 						<Icon name="fe:github" class="w-6 h-6" /> Source
 					</a>
 				</div>
@@ -55,15 +55,15 @@ const { frontmatter, slug } = Astro.props as Props;
 			</main>
 		</div>
 		<div
-			class="col-start-1 md:col-start-2 col-end-3 row-start-2 md:row-start-1 row-end-3 md:-row-end-1 w-full p-4 border-solid border-2 border-cyan-900 shadow-sharp"
+			class="col-start-1 md:col-start-2 col-end-3 row-start-2 md:row-start-1 row-end-3 md:-row-end-1 w-full p-4 rounded border-solid border-cyan-900"
 		>
 			<span class="block text-white font-semibold font-heading text-2xl border-b-2 border-cyan-900 pb-3"
 				>Tech Stack</span
 			>
 			{
 				frontmatter.stack.map(([stackName, stackHomepage]) => (
-					<div class="grid grid-cols-[3.5rem_1fr] gap-4 items-center py-4 border-b-2 border-cyan-900">
-						<div class="flex items-center justify-center p-2 border-solid border-2 border-cyan-900 shadow-sharp bg-white overflow-hidden aspect-1">
+					<div class="grid grid-cols-[3.5rem_1fr] gap-4 items-center py-4 rounded border border-cyan-900">
+						<div class="flex items-center justify-center p-2 rounded border border-cyan-900 shadow-sharp bg-white overflow-hidden aspect-1">
 							<img
 								class={`w-full ${stackName.toLowerCase() === "nextjs" ? "filter-invert" : ""}`}
 								src={`/assets/logo/${stackName.toLowerCase().replace(/\s+/g, "-")}.png`}
