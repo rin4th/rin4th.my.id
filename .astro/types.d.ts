@@ -198,41 +198,6 @@ declare module 'astro:content' {
 
 	type ContentEntryMap = {
 		"books": {
-"buku-1/2bwm.mdx": {
-	id: "buku-1/2bwm.mdx";
-  slug: "buku-1/2bwm";
-  body: string;
-  collection: "books";
-  data: InferEntrySchema<"books">
-} & { render(): Render[".mdx"] };
-"buku-1/a-year-of-japanese.mdx": {
-	id: "buku-1/a-year-of-japanese.mdx";
-  slug: "buku-1/a-year-of-japanese";
-  body: string;
-  collection: "books";
-  data: InferEntrySchema<"books">
-} & { render(): Render[".mdx"] };
-"buku-1/combining-adonis-and-svelte-using-inertia.mdx": {
-	id: "buku-1/combining-adonis-and-svelte-using-inertia.mdx";
-  slug: "buku-1/combining-adonis-and-svelte-using-inertia";
-  body: string;
-  collection: "books";
-  data: InferEntrySchema<"books">
-} & { render(): Render[".mdx"] };
-"buku-2/combining-adonis-and-svelte-using-inertia.mdx": {
-	id: "buku-2/combining-adonis-and-svelte-using-inertia.mdx";
-  slug: "buku-2/combining-adonis-and-svelte-using-inertia";
-  body: string;
-  collection: "books";
-  data: InferEntrySchema<"books">
-} & { render(): Render[".mdx"] };
-"buku-2/defx-nvim.mdx": {
-	id: "buku-2/defx-nvim.mdx";
-  slug: "buku-2/defx-nvim";
-  body: string;
-  collection: "books";
-  data: InferEntrySchema<"books">
-} & { render(): Render[".mdx"] };
 "godoc/go-basic.mdx": {
 	id: "godoc/go-basic.mdx";
   slug: "godoc/go-basic";
