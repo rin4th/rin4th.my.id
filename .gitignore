@@ -18,3 +18,7 @@ pnpm-debug.log*
 
 # macOS-specific files
 .DS_Store
+
+# example post
+src/content/posts/neovim-lua-statusline.mdx
+src/content/projects/kanaizu.mdx
