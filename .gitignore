@@ -20,5 +20,3 @@ pnpm-debug.log*
 .DS_Store
 
 # example post
-src/content/posts/neovim-lua-statusline.mdx
-src/content/projects/kanaizu.mdx
