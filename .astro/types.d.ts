@@ -221,13 +221,6 @@ declare module 'astro:content' {
   collection: "posts";
   data: InferEntrySchema<"posts">
 } & { render(): Render[".mdx"] };
-"neovim-lua-statusline.mdx": {
-	id: "neovim-lua-statusline.mdx";
-  slug: "neovim-lua-statusline";
-  body: string;
-  collection: "posts";
-  data: InferEntrySchema<"posts">
-} & { render(): Render[".mdx"] };
 };
 "projects": {
 "kanaizu.mdx": {
