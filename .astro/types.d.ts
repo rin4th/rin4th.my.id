@@ -214,6 +214,13 @@ declare module 'astro:content' {
 } & { render(): Render[".mdx"] };
 };
 "posts": {
+"leveraging-siem-logs-for-threat-detection-and-analysis.mdx": {
+	id: "leveraging-siem-logs-for-threat-detection-and-analysis.mdx";
+  slug: "leveraging-siem-logs-for-threat-detection-and-analysis";
+  body: string;
+  collection: "posts";
+  data: InferEntrySchema<"posts">
+} & { render(): Render[".mdx"] };
 "neovim-lua-statusline.mdx": {
 	id: "neovim-lua-statusline.mdx";
   slug: "neovim-lua-statusline";

@@ -1,0 +1,120 @@
+---
+title: Leveraging SIEM Logs for Threat Detection and Analysis
+date: 2023-03-31
+description: A post where I give my experience on how Elastic give an alert for threat Detection
+tags:
+  - cyber security
+  - blue team
+---
+
+[arya-adhi]: https://www.linkedin.com/in/aryaadhi91/
+[fajar]: https://www.linkedin.com/in/fajar-s-2a9623224/
+[khakim]: https://www.linkedin.com/in/abdul-khakim-5a8434257/
+
+# Introduction
+Hello there! So, in early March I, [Fajar][fajar], and [Abdul Khakim][khakim] was given an assignment by my Mentor at Metrodata Academy [Arya Adhi Nugraha][arya-adhi], the assignment is to explore one off the SIEM tools that is Elastic, and the objective of the assignment is to has a dummy host that integrated with Elastic and the we as an attacker must to attack on dummy host so the Elastic give an alret from our action before.
+
+# Prerequisite
+There are some prerequisite to do this assignment.
+
+- Elastic Cloud [SIEM]
+	<table>
+		<tr>
+			<td> Integration </td>
+			<td> - Elastic Defend <br> - Suricata </br> </td>
+		</tr>
+	</table>
+
+- Kali Linux as Attacker
+- Target Machine
+
+	<table>
+	  <tr>
+	    <td> Resource </td>
+	    <td> - 2 vCPUs <br> - 8GB Memory <br></br> - 16GB Disk </br></td>
+	  </tr>
+	  <tr>
+	    <td> OS </td>
+	    <td> Ubuntu Server 20.04</td>
+	  </tr>
+	  <tr>
+	    <td> IDS </td>
+	    <td> Suricata with custom threats rules</td>
+	  </tr>
+	  <tr>
+	  	<td> Service </td>
+		<td> - DVWA <br> - SSH </br></td>
+	  </tr>
+	</table>
+
+# TTPs Objectives
+## Reconnaisance
+- Active Scanning [T1595]
+## Initial Access
+- Drive-by Compromise [T1189]
+- Exploit Public-Facing Application [T1190]
+## Persistence
+-  Server Software Component [T1505]
+
+# Attack and Detect
+## Reconnaisance
+For the starting we would like to scanning the open port on the host using **nmap**. Using the command 
+
+```bash
+nmap -sC -sV -p1-5000 20.205.138.196 -oN nmap
+```
+
+Note
+- **-sC** : used for using default script
+- **-sV** : used for service info on open port
+- **-oN** : used for saving the result on nmap file
+
+And the result was there are two open port 22 (SSH) and 80 (HTTP). For the port 80, server using Apache and using Ubuntu as a Operating System
+![nmapresult](/assets/posts/siem-for-threat-detection/nmapresult.jpeg)
+
+The SIEM detect that there are some request that trying to scan service using NMAP Sripting Engine
+![siemnmap](/assets/posts/siem-for-threat-detection/siemnmap.jpeg)
+
+## SQL Injection
+SQL injection (SQL injection) is a web attack technique that exploits security holes in web applications that allow attackers to inject malicious SQL code into SQL queries executed by the database server. In the experiment using sqlmap the attacker entered a command to obtain all database using the following command
+
+```bash
+sqlmap -r reqSQL.txt --dbs 
+```
+
+Note
+- **-r** : used for load the HTTP request from a file
+- **--dbs** : used for to enumerate DBMS database
+
+![sqlmap](/assets/posts/siem-for-threat-detection/sqlmap.jpeg)
+
+The result that there are two database on the server **dvwa** and **information_schema**, the **dvwa** database used for the web service DVWA and information_schema is a database that provide information about all the tables, views, columns, etc.
+
+The SIEM detect that there are some request to trying SQL Injection. So the result is True Positive
+![sqlmapsiem](/assets/posts/siem-for-threat-detection/sqlmapsiem.jpeg)
+
+## XSS
+XSS is a technique where an attacker injects malicious scripts into a target website and allows them to gain access control over the website. In the current experiment, the service that will be tested is the DVWA service with an XSS DOM vulnerability with 'Hard' difficulty. To perform the injection, we can send the script below to retrieve the cookies contained in the browser. 
+
+```javascript
+<script>alert(document.cookie)</script>
+```
+
+![xss](/assets/posts/siem-for-threat-detection/xss.jpeg)
+
+The SIEM detect there is alert that indicates the script sent by the client is an attempt to perform XSS.
+![xsssiem](/assets/posts/siem-for-threat-detection/xsssiem.jpeg)
+
+## File Upload
+File uploading has become a common thing on a website, where users can upload files such as images, documents, etc. There should be a service to filter files to be uploaded, that way the system will be safe against dangerous files such as backdoor files.
+
+In the current experiment, the service that will be tested is the DVWA File Upload service with a 'medium' difficulty level. Here we are trying to upload an index.php file which contains a malicious file that can allow attackers to gain control of the system being attacked. By bypassing the 'Content-type' to 'image/jpeg' using the Burpsuite tool the index.php file was successfully uploaded as in the image below
+
+![fileupload](/assets/posts/siem-for-threat-detection/fileupload.jpeg)
+
+SIEM gets an alert that a Suspicious PHP Code has occurred during HTTP POST, which indicates that our attack has been successfully recorded by SIEM
+
+![fileuploadsiem](/assets/posts/siem-for-threat-detection/fileuploadsiem.jpeg)
+
+# Conclusion
+This simulation was carried out with the aim of testing attack detection capabilities using Elastic Security. In this simulation, a dummy host with a DVWA vulnerable web application is used as an attack target. Preparation begins with creating a dummy host, activating the intrusion prevention system (IDS) with Suricita, creating an Elastic account, integrating with Elastic Defend, installing the Elastic Agent, integrating Elastic with Suricita, and monitoring the host via Elastic Cloud. Furthermore, attack simulations are carried out using various techniques such as SQL inject (SQLi), Cross-Site Scripting (XSS), and uploading malicious files. The results of this simulation are recorded and analyzed via Elastic SIEM to evaluate the effectiveness of attack detection. The success of Elastic SIEM in detecting this series of suspicious activities shows the importance of implementing an effective intrusion detection system in securing networks and systems from cyber threats. With proper integration and careful data analysis, we can improve system security and reduce the risk of exploited cyberattacks.
