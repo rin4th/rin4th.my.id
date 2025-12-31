@@ -23,7 +23,7 @@
     "@fontsource/poppins": "^5.0.3",
     "@fontsource/space-grotesk": "^5.0.3",
     "astro": "^2.6.4",
-    "sharp": ">=0.32.1",
+    "sharp": "^0.34.5",
     "svelte": "^3.59.1"
   },
   "devDependencies": {
