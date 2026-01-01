@@ -26,8 +26,8 @@ const { seo } = Astro.props
 		<SEO {...seo} />
 	</head>
 	<body class="bg-more-dark">
-		<div class="sm:m-10 flex flex-row justify-items-start auto-cols-max custom-scrollbar sm:gap-3">
-			<aside class="inset-y-1 sticky self-start lg:block">	
+		<div class="sm:m-10 flex flex-col sm:flex-row justify-items-start auto-cols-max custom-scrollbar gap-0 sm:gap-3">
+			<aside class="self-start lg:sticky lg:top-4 lg:block w-full sm:w-auto">
 				<Navbar />
 				<slot name="sidebar" />
 			</aside>

@@ -60,29 +60,68 @@ const routes: Route[] = [
 	},
 ];
 ---
-<nav
-    class="min-w-60 rounded bg-front-dark mb-5 min-h-full"
->
-    <ul class="p-3 m-0 list-none">
-        {
-            routes.map((route) => {
-                const isRouteActive = Astro.url.pathname === route.path;
-                return (
-                    <li>
-                        <a 
-                            aria-label={route.name} 
-                            href={route.path}
-                            class="no-underline "
-                        >
-                            <div class="text-white px-2 font-bold rounded border-dashed border-white border-2 text-lg mt-2 hover:text-cyan-200">
-                                <div class="flex flex-row gap-x-2">
-                                    <Icon name={route.icon} class={isRouteActive ? route.status.active + " h-7 w-7" : route.status.inactive + " h-7 w-7"} />{route.name}
-                                </div>
-                            </div>
-                        </a>
-                    </li>
-                );
-            })
-        }
-    </ul>
-</nav>
+<div class="mb-5">
+    <div class="md:static fixed top-4 right-4 z-50">
+        {/* Mobile hamburger trigger */}
+        <button
+            id="nav-toggle"
+            class="md:hidden group grid place-items-center h-10 w-10 rounded bg-front-dark text-white border-2 border-transparent transition-[color_ease-out_0.2s] hover:text-cyan-200 focus-visible:(outline-none ring-2 ring-cyan-200)"
+            aria-controls="main-nav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+            type="button"
+        >
+            <span class="sr-only">Open main menu</span>
+            <span class="nav-toggle-icon" aria-hidden="true">
+                <span class="nav-toggle-line nav-toggle-line-1"></span>
+                <span class="nav-toggle-line nav-toggle-line-2"></span>
+            </span>
+        </button>
+
+        <nav
+            id="main-nav"
+            class="md:min-w-60 min-w-0 rounded bg-front-dark md:min-h-full md:block hidden md:mt-0 md:static fixed top-16 right-4 left-4 h-1/2 z-40 border border-white/50 overflow-auto"
+        >
+            <ul class="p-6 m-0 list-none flex flex-col items-stretch justify-center gap-4 h-full md:p-3 md:justify-start md:gap-0">
+                {
+                    routes.map((route) => {
+                        const isRouteActive = Astro.url.pathname === route.path;
+                        return (
+                            <li class="w-full">
+                                <a 
+                                    aria-label={route.name} 
+                                    href={route.path}
+                                    class="no-underline block w-full"
+                                >
+                                    <div class="text-white px-2 font-bold rounded border-dashed border-white border-2 text-lg mt-2 hover:text-cyan-200">
+                                        <div class="flex flex-row gap-x-2 justify-start">
+                                            <Icon name={route.icon} class={isRouteActive ? route.status.active + " h-7 w-7" : route.status.inactive + " h-7 w-7"} />{route.name}
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                        );
+                    })
+                }
+            </ul>
+        </nav>
+    </div>
+</div>
+
+<script>
+    // Toggle mobile visibility for the main nav
+    const toggleBtn = document.getElementById('nav-toggle');
+    const mainNav = document.getElementById('main-nav');
+    if (toggleBtn && mainNav) {
+        toggleBtn.addEventListener('click', () => {
+            const isHidden = mainNav.classList.contains('hidden');
+            if (isHidden) {
+                mainNav.classList.remove('hidden');
+                toggleBtn.setAttribute('aria-expanded', 'true');
+            } else {
+                mainNav.classList.add('hidden');
+                toggleBtn.setAttribute('aria-expanded', 'false');
+            }
+        });
+    }
+</script>

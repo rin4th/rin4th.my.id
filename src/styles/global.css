@@ -6,7 +6,49 @@
     background-color: #333333;
   }
   
-  .aside-nav{
+.aside-nav{
     float: left;
   }
+
+.nav-toggle-icon{
+  position: relative;
+  display: inline-block;
+  width: 1.5rem;
+  height: 0.9rem;
+}
+
+.nav-toggle-line{
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  border-radius: 9999px;
+  background-color: currentColor;
+  transform-origin: center;
+  transition: transform 200ms ease-out;
+}
+
+.nav-toggle-line-1{
+  top: 0;
+}
+
+.nav-toggle-line-2{
+  bottom: 0;
+}
+
+#nav-toggle[aria-expanded="true"] .nav-toggle-line-1{
+  transform: translateY(0.45rem) rotate(45deg);
+}
+
+#nav-toggle[aria-expanded="true"] .nav-toggle-line-2{
+  transform: translateY(-0.45rem) rotate(-45deg);
+}
+
+#nav-toggle[aria-expanded="true"]{
+  border-color: #a5f3fc;
+}
+
+#nav-toggle[aria-expanded="true"] + #main-nav{
+  border-color: #a5f3fc;
+}
   
