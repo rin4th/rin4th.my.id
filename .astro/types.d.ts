@@ -203,14 +203,14 @@ declare module 'astro:content' {
   slug: "godoc/go-basic";
   body: string;
   collection: "books";
-  data: any
+  data: InferEntrySchema<"books">
 } & { render(): Render[".mdx"] };
 "godoc/introduction.mdx": {
 	id: "godoc/introduction.mdx";
   slug: "godoc/introduction";
   body: string;
   collection: "books";
-  data: any
+  data: InferEntrySchema<"books">
 } & { render(): Render[".mdx"] };
 };
 "posts": {
@@ -219,7 +219,14 @@ declare module 'astro:content' {
   slug: "leveraging-siem-logs-for-threat-detection-and-analysis";
   body: string;
   collection: "posts";
-  data: any
+  data: InferEntrySchema<"posts">
+} & { render(): Render[".mdx"] };
+"mykisah-2025.mdx": {
+	id: "mykisah-2025.mdx";
+  slug: "mykisah-2025";
+  body: string;
+  collection: "posts";
+  data: InferEntrySchema<"posts">
 } & { render(): Render[".mdx"] };
 };
 "projects": {
@@ -228,7 +235,7 @@ declare module 'astro:content' {
   slug: "penaist";
   body: string;
   collection: "projects";
-  data: any
+  data: InferEntrySchema<"projects">
 } & { render(): Render[".mdx"] };
 };
 
@@ -240,5 +247,5 @@ declare module 'astro:content' {
 
 	type AnyEntryMap = ContentEntryMap & DataEntryMap;
 
-	type ContentConfig = never;
+	type ContentConfig = typeof import("../src/content/config");
 }
