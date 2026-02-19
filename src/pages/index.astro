@@ -4,8 +4,8 @@ import Section from "~/components/Section.astro";
 import { getCollection } from "astro:content";
 import Header from "~/components/Header.astro";
 
-const posts = await getCollection("posts", ({ data }) => !data.draft);
-const projects = await getCollection("projects");
+const posts = await getCollection("posts", ({ data }) => !data.draft && data.visible);
+const projects = await getCollection("projects", ({ data }) => data.visible);
 
 const LIMIT = 3;
 const sortedPosts = posts.sort((a, b) => (a.data.date > b.data.date ? -1 : 1)).slice(0, LIMIT);

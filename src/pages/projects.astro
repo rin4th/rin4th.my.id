@@ -3,10 +3,16 @@ import { getCollection } from "astro:content";
 import ProjectCard from "~/components/ProjectCard.astro";
 import MainLayout from "~/layouts/MainLayout.astro";
 
-const personalProjects = await getCollection("projects", ({ data }) => data.type === "personal");
+const personalProjects = await getCollection(
+	"projects",
+	({ data }) => data.type === "personal" && data.visible,
+);
 const sortedPersonalProjects = personalProjects.sort((a, b) => (a.data.date > b.data.date ? -1 : 1));
 
-const assignmentProjects = await getCollection("projects", ({ data }) => data.type === "assignment");
+const assignmentProjects = await getCollection(
+	"projects",
+	({ data }) => data.type === "assignment" && data.visible,
+);
 const sortedAssignmentProjects = assignmentProjects.sort((a, b) => (a.data.date > b.data.date ? -1 : 1));
 ---
 

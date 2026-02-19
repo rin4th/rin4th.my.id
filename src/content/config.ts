@@ -3,6 +3,7 @@ import { defineCollection, z } from "astro:content";
 const postCollection = defineCollection({
 	schema: z.object({
 		draft: z.boolean().optional().default(false),
+		visible: z.boolean().optional().default(true),
 		title: z.string(),
 		date: z.coerce.date(),
 		description: z.string(),
@@ -13,6 +14,7 @@ const postCollection = defineCollection({
 const projectCollection = defineCollection({
 	schema: z.object({
 		title: z.string(),
+		visible: z.boolean().optional().default(true),
 		date: z.coerce.date(),
 		description: z.string(),
 		demo: z.string().nullable().default(null),
