@@ -214,6 +214,13 @@ declare module 'astro:content' {
 } & { render(): Render[".mdx"] };
 };
 "posts": {
+"being-ghost.mdx": {
+	id: "being-ghost.mdx";
+  slug: "being-ghost";
+  body: string;
+  collection: "posts";
+  data: InferEntrySchema<"posts">
+} & { render(): Render[".mdx"] };
 "leveraging-siem-logs-for-threat-detection-and-analysis.mdx": {
 	id: "leveraging-siem-logs-for-threat-detection-and-analysis.mdx";
   slug: "leveraging-siem-logs-for-threat-detection-and-analysis";
@@ -221,9 +228,23 @@ declare module 'astro:content' {
   collection: "posts";
   data: InferEntrySchema<"posts">
 } & { render(): Render[".mdx"] };
+"my-homelab-setup.mdx": {
+	id: "my-homelab-setup.mdx";
+  slug: "my-homelab-setup";
+  body: string;
+  collection: "posts";
+  data: InferEntrySchema<"posts">
+} & { render(): Render[".mdx"] };
 "mykisah-2025.mdx": {
 	id: "mykisah-2025.mdx";
   slug: "mykisah-2025";
+  body: string;
+  collection: "posts";
+  data: InferEntrySchema<"posts">
+} & { render(): Render[".mdx"] };
+"one-week-being-ghost.mdx": {
+	id: "one-week-being-ghost.mdx";
+  slug: "one-week-being-ghost";
   body: string;
   collection: "posts";
   data: InferEntrySchema<"posts">
