@@ -1,12 +1,14 @@
 ---
 title: My Homelab Setup
-date: 2026-03-28
+date: 2026-03-25
 description: This is how i setup my mini computer personal to be Homelab
 tags:
   - homelab
   - proxmox
 visible: true
 ---
+
+import Update from "~/components/Update.astro";
 
 [pve-post-install]: https://community-scripts.org/scripts/post-pve-install
 [yt-casaos]: https://www.youtube.com/watch?v=9KzI3GiZsrA&t=127s
@@ -66,41 +68,27 @@ Previously, I planned to install Ubuntu Server as the main OS for the homelab bu
 </table>
 
 Before setup every LXC and VM set up post install Proxmox, and we can use [this helper script][pve-post-install]
-```bash
-$ bash -c "$(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/tools/pve/post-pve-install.sh)"
-```
+
 ![install-pve](/assets/posts/my-homelab-setup/install_proxmox.png)
+
 # Install VM & LXC
 ## Install Casa OS
-Actually i didn't know about this OS, but after watching this [video][yt-casaos] which CasaOS is Debian based and has some feature that can help me for NAS such as Web-Based Interface, File Manager Web-Based. To install Casa OS can use [this helper script][casaos-install]
-```bash
-$ bash -c "$(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/ct/casaos.sh)"
-```
-I'll use this LXC to deploy every my project in the future 
+Actually i didn't know about this OS, but after watching this [video][yt-casaos] which CasaOS is Debian based and has some feature that can help me for NAS such as Web-Based Interface, File Manager Web-Based. To install Casa OS can use [this helper script][casaos-install]. I'll use this LXC to deploy every my project in the future 
 
 ![install-casa](/assets/posts/my-homelab-setup/install_casa.png)
 
 ## Install Adguard
 The reason I installed AdGuard is so that when I access my homelab, I don't need to enter an IP address. I wanted to access it using my subdomain [rzl.app][rzl-app], even though these records only exist on my local DNS Server. To install Adguard can use [this helper script][adguard-install]
-```bash
-$ bash -c "$(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/ct/adguard.sh)"
-```
 
 ![install-adguard](/assets/posts/my-homelab-setup/install_adguard.png)
 
 ## Install NGINX Proxy Manager Plus
 To make it look like a real website using only a domain name without a port, I installed NPM Plus as a Reverse Proxy. To install NPM Plus can use [this helper script][npmplus-install]
-```bash
-$ bash -c "$(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/ct/npmplus.sh)"
-```
 
 ![install-npmplus](/assets/posts/my-homelab-setup/install_npm.png)
 
 ## Install Ubuntu
 Now I want to install another Ubuntu for my Openclaw, i ask gemini that it's recommended to install Openclaw on another LXC so it can more safe. Using [this helper script][ubuntu-install]
-```bash
-$ bash -c "$(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/ct/ubuntu.sh)"
-```
 
 ![install-ubuntu](/assets/posts/my-homelab-setup/install_ubuntu.png)
 
@@ -109,9 +97,18 @@ My plan is to make my homelab accessible in anywhere but in private network, pre
 
 ## Setup Tailscale
 I used Tailscale as a Subnet Router on Host Proxmox, so it doesn't need to install tailscale on every LXC or VM. By installing tailscale using this command
-```bash
-$ tailscale up --advertise-routes=192.168.1.0/24 --accept-dns=false
-```
+
+<Update date="2026-03-28">
+
+The blog layout breaks on mobile when an article contains a code block, because the content width overflows. For now a code block using table tag :v
+
+</Update>
+
+<table>
+  <tr>
+    <td>$ tailscale up --advertise-routes=192.168.1.0/24 --accept-dns=false</td>
+  </tr>
+</table>
 
 Note
 - **--advertise-routes**: This tells Tailscale to route traffic for the 192.168.1.x subnet through this Proxmox node.
