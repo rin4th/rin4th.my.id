@@ -2,4 +2,4 @@
 
 Personal portfolio and blog — built with Astro 5, Svelte 5, and Tailwind CSS v4.
 
-![Nijika](/assets/logo/nijika.gif)
+![nijika](/assets/logo/nijika.gif)
