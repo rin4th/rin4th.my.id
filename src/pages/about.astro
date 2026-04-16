@@ -1,0 +1,159 @@
+---
+import Layout from "@/layouts/Layout.astro";
+
+const skills = [
+  { category: "Skills", items: ["Offensive Security", "Software Engineering", "DevSecOps"] },
+  { category: "Tools", items: ["Burp Suite", "Ghidra", "Frida", "Postman", "Git"] },
+];
+
+const socials = [
+  { label: "GitHub", href: "https://github.com/rin4th", icon: "github" },
+  { label: "LinkedIn", href: "https://linkedin.com/in/rin4th", icon: "linkedin" },
+];
+---
+
+<Layout title="About" description="About rin4th — Security researcher, CTF player, and developer.">
+  <div class="max-w-6xl mx-auto px-4 md:px-6 py-12">
+    <div class="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-12 items-start">
+      <!-- Left: Profile -->
+      <aside>
+        <div
+          class="rounded-xl border p-6 sticky top-24"
+          style="background: #252525; border-color: #333;"
+        >
+          <!-- Avatar -->
+          <div class="mb-5 flex justify-center">
+            <div
+              class="w-24 h-24 rounded-full border-2 overflow-hidden flex items-center justify-center text-4xl font-bold"
+              style="border-color: #a3e635; background: #2d2d2d; color: #a3e635;"
+            >
+              <img src="/assets/logo/nijika.gif" alt="Rin4th" />
+            </div>
+          </div>
+
+          <!-- Name -->
+          <div class="text-center mb-5">
+            <h1 class="text-xl font-bold" style="color: #f4f4f5;">Rizal Nur</h1>
+            <p class="text-sm font-mono mt-1" style="color: #a3e635;">Offensive Security</p>
+          </div>
+
+          <div class="h-px mb-5" style="background: #333;"></div>
+
+          <!-- Stats -->
+          <div class="space-y-3 mb-5">
+            <div class="flex items-center gap-2 text-sm">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                style="color: #a3e635; flex-shrink: 0;"
+              >
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                <circle cx="12" cy="10" r="3"></circle>
+              </svg>
+              <span style="color: #a1a1aa;">Indonesia</span>
+            </div>
+            <div class="flex items-center gap-2 text-sm">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                style="color: #a3e635; flex-shrink: 0;"
+              >
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+              <span style="color: #a1a1aa;">GMT+7</span>
+            </div>
+          </div>
+
+          <div class="h-px mb-5" style="background: #333;"></div>
+
+          <!-- Social Links -->
+          <div class="space-y-2">
+            {
+              socials.map((s) => (
+                <a
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all duration-200 hover:bg-opacity-100"
+                  style="background: #2d2d2d; color: #a1a1aa;"
+                >
+                  <span class="w-2 h-2 rounded-full" style="background: #a3e635;" />
+                  {s.label}
+                </a>
+              ))
+            }
+          </div>
+        </div>
+      </aside>
+
+      <!-- Right: Content -->
+      <main class="space-y-10">
+        <!-- Bio -->
+        <section>
+          <h2 class="text-xl font-bold mb-4" style="color: #f4f4f5;">
+            <span style="color: #a3e635;">▸</span> About Me
+          </h2>
+          <div class="space-y-4 text-base leading-relaxed" style="color: #a1a1aa;">
+            <p>
+              Harro! I'm <strong style="color: #f4f4f5;">Rizal Nur</strong>, a cyber security consultant from
+              Indonesia. I spend most of my time breaking things to understand how they work, whether it's web apps, networks, or software. I speak Bahasa, English, and little bit of Japanese. Though I am currently still learning English, feel free to correct both the content and language of my content whenever needed.
+            </p>
+            <p>
+              I create this blog as a method to learn and understand what i have learned, and help me on my writing skills. Furthermore, I hope that the content in this blog can help people who are facing the same problems.
+            </p>
+          </div>
+        </section>
+
+        <!-- Divider -->
+        <div class="h-px" style="background: #333;"></div>
+
+        <!-- Skills -->
+        <section>
+          <h2 class="text-xl font-bold mb-6" style="color: #f4f4f5;">
+            <span style="color: #a3e635;">▸</span> Skills & Tools
+          </h2>
+          <div class="space-y-6">
+            {
+              skills.map((group) => (
+                <div>
+                  <h3
+                    class="text-xs font-mono font-semibold tracking-widest uppercase mb-3"
+                    style="color: #a3e635;"
+                  >
+                    {group.category}
+                  </h3>
+                  <div class="flex flex-wrap gap-2">
+                    {group.items.map((item) => (
+                      <span
+                        class="px-3 py-1.5 rounded-lg text-sm font-mono"
+                        style="background: #2d2d2d; color: #a1a1aa; border: 1px solid #3d3d3d;"
+                      >
+                        {item}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ))
+            }
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+</Layout>

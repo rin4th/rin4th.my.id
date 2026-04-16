@@ -1,63 +1,43 @@
 ---
-import Icon from "astro-icon";
-import data from "~/data/sites";
+const year = new Date().getFullYear();
 
-type Social = {
-	url: string;
-	icon: string;
-};
-
-const socials: Social[] = [
-	{ url: data.github, icon: "mdi:github" },
-	{ url: data.twitter, icon: "mdi:twitter" },
-	{ url: `mailto:${data.email}`, icon: "mdi:mail" },
+const socials = [
+  { label: "GitHub", href: "https://github.com/rin4th" },
+  { label: "LinkedIn", href: "https://linkedin.com/in/rin4th" },
 ];
 ---
 
-<footer
-	class="relative mt-12 text-center pt-8 pb-30 md:pb-10 px-1 bg-gray-300 border-t-2 border-cyan-200 transition-property-filter ease-out duration-200 font-heading"
->
-	<div class="grid grid-cols-3 items-center justify-items-center max-w-[220px] mx-auto mb-8">
-		{
-			socials.map((s) => (
-				<a
-					class="text-zinc-600 hover:text-cyan-600"
-					href={s.url}
-					target="_blank"
-					rel="norel noreferrer"
-					aria-label={s.url}
-				>
-					<Icon class="w-8 h-8 text-current" name={s.icon} />
-				</a>
-			))
-		}
-	</div>
-	<p class="leading-relaxed text-zinc-800 text-xl align-middle">
-		Powered by
-		<a class="text-cyan-700 underline decoration-dashed decoration-offset-4" href="https://astro.build">
-			<Icon name="vscode-icons:file-type-astro" class="inline w-6 h-6" />
-			Astro
-		</a>
-		and
-		<a class="text-cyan-700 underline decoration-dashed decoration-offset-4" href="https://svelte.dev">
-			<Icon name="vscode-icons:file-type-svelte" class="inline w-6 h-6" />
-			Svelte
-		</a>
-		&bull;
-		Deployed at
-		<a class="text-cyan-700 underline decoration-dashed decoration-offset-4" href="https://pages.cloudflare.com/">
-			<Icon name="simple-icons:cloudflare" class="inline w-6 h-6 color-[#f4811f]" />
-			Cloudflare Pages
-		</a>
-		<br />
-		Source code is available on
-		<a class="text-cyan-700 underline decoration-dashed decoration-offset-4" href={`${data.github}/rin4th.my.id`}>
-			<Icon name="simple-icons:github" class="inline w-5 h-5 color-zinc-800" />
-			 Github
-		</a>
-	</p>
-	<p class="leading-relaxed text-zinc-800 text-xl">
-		Copyright &copy; {new Date().getFullYear()}
-		<a class="no-underline text-zinc-800" href={data.github}> Rin4th</a>
-	</p>
+<footer class="border-t mt-16" style="border-color: #333; background-color: #1e1e1e;">
+  <div class="max-w-6xl mx-auto px-4 md:px-6 py-8">
+    <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <span class="font-mono text-sm" style="color: #71717a;">
+          © {year}
+          <span style="color: #a3e635;">rin4th</span> — built with
+          <a
+            href="https://astro.build"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="underline-offset-2 hover:underline"
+            style="color: #a1a1aa;">Astro</a
+          >
+        </span>
+      </div>
+      <div class="flex items-center gap-4">
+        {
+          socials.map((s) => (
+            <a
+              href={s.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-sm transition-colors duration-200 hover:text-accent"
+              style="color: #71717a;"
+            >
+              {s.label}
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </div>
 </footer>

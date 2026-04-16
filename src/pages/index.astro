@@ -1,33 +1,99 @@
 ---
-import MainLayout from "~/layouts/MainLayout.astro";
-import Section from "~/components/Section.astro";
+import Layout from "@/layouts/Layout.astro";
+import HeroSection from "@/components/HeroSection.astro";
+import PostCard from "@/components/PostCard.astro";
+import ProjectCard from "@/components/ProjectCard.astro";
 import { getCollection } from "astro:content";
-import Header from "~/components/Header.astro";
 
-const posts = await getCollection("posts", ({ data }) => !data.draft && data.visible);
-const projects = await getCollection("projects", ({ data }) => data.visible);
+const allPosts = await getCollection("blog", ({ data }) => !data.draft);
+const recentPosts = allPosts
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 3);
 
-const LIMIT = 3;
-const sortedPosts = posts.sort((a, b) => (a.data.date > b.data.date ? -1 : 1)).slice(0, LIMIT);
-const sortedProjects = projects.sort((a, b) => (a.data.date > b.data.date ? -1 : 1)).slice(0, LIMIT);
+const allProjects = await getCollection("project");
+const recentProjects = allProjects
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 3);
 ---
 
-<MainLayout seo={{ title: "Home" }}>
-	<main class="max-w-full my-0 p-0 z-[2]">
-		<Header />
-		<Section
-			title="Recent Posts" 
-			data={sortedPosts} 
-			buttonText="More Posts" 
-			url="/posts/" 
-			type="post" 
-		/>
-		<Section
-			title="Recent Projects"
-			data={sortedProjects}
-			buttonText="More Projects"
-			url="/projects/"
-			type="project"
-		/>
-	</main>
-</MainLayout>
+<Layout title="Home" description="rin4th — Security researcher, developer, and CTF player.">
+  <!-- Hero -->
+  <HeroSection />
+
+  <div class="max-w-6xl mx-auto px-4 md:px-6 pb-20 space-y-20">
+    <!-- Recent Blog -->
+    <section>
+      <div class="flex items-center justify-between mb-8">
+        <div>
+          <h2 class="text-xl font-bold" style="color: #f4f4f5;">
+            <span style="color: #a3e635;">▸</span> Recent Blog
+          </h2>
+          <p class="text-sm mt-1" style="color: #71717a;">Latest thoughts &amp; writeups</p>
+        </div>
+        <a
+          href="/blog"
+          class="text-sm font-medium flex items-center gap-1 transition-colors duration-200"
+          style="color: #a3e635;"
+        >
+          View all
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </a>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {recentPosts.map((post) => <PostCard post={post} />)}
+      </div>
+    </section>
+
+    <!-- Divider -->
+    <div class="h-px" style="background: linear-gradient(to right, transparent, #333, transparent);"></div>
+
+    <!-- Recent Projects -->
+    <section>
+      <div class="flex items-center justify-between mb-8">
+        <div>
+          <h2 class="text-xl font-bold" style="color: #f4f4f5;">
+            <span style="color: #a3e635;">▸</span> Recent Projects
+          </h2>
+          <p class="text-sm mt-1" style="color: #71717a;">Things I've built</p>
+        </div>
+        <a
+          href="/project"
+          class="text-sm font-medium flex items-center gap-1 transition-colors duration-200"
+          style="color: #a3e635;"
+        >
+          View all
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </a>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {recentProjects.map((project) => <ProjectCard project={project} />)}
+      </div>
+    </section>
+  </div>
+</Layout>

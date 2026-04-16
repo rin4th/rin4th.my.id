@@ -1,5 +1,5 @@
 # rin4th.my.id
 
-Always a WIP :)
+Personal portfolio and blog — built with Astro 5, Svelte 5, and Tailwind CSS v4.
 
-![Homepage Preview](./.github/homepage.png)
+![Nijika](/assets/logo/nijika.gif)

@@ -1,0 +1,107 @@
+---
+import type { BlogPost } from "@/types";
+
+interface Props {
+  post: BlogPost;
+}
+
+const { post } = Astro.props;
+const { title, date, excerpt, tags, coverImage } = post.data;
+
+const formattedDate = new Intl.DateTimeFormat("en-US", {
+  year: "numeric",
+  month: "short",
+  day: "numeric",
+}).format(date);
+---
+
+<article
+  class="group relative rounded-xl border overflow-hidden transition-all duration-300 hover:-translate-y-1"
+  style="background: #252525; border-color: #333;"
+>
+  {
+    coverImage && (
+      <div class="h-44 overflow-hidden" style="background: #2d2d2d;">
+        <img
+          src={coverImage}
+          alt={title}
+          class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          loading="lazy"
+        />
+      </div>
+    )
+  }
+
+  <div class="p-5">
+    <!-- Tags -->
+    {
+      tags && tags.length > 0 && (
+        <div class="flex flex-wrap gap-1.5 mb-3">
+          {tags.slice(0, 3).map((tag) => (
+            <span
+              class="px-2 py-0.5 rounded text-xs font-mono"
+              style="background: rgba(163,230,53,0.08); color: #a3e635; border: 1px solid rgba(163,230,53,0.2);"
+            >
+              #{tag}
+            </span>
+          ))}
+        </div>
+      )
+    }
+
+    <!-- Title -->
+    <h3
+      class="font-bold text-base mb-2 leading-snug transition-colors duration-200 group-hover:text-accent line-clamp-2"
+      style="color: #f4f4f5;"
+    >
+      <a href={`/blog/${post.slug}`} class="stretched-link">
+        {title}
+      </a>
+    </h3>
+
+    <!-- Excerpt -->
+    <p class="text-sm mb-4 line-clamp-2 leading-relaxed" style="color: #a1a1aa;">
+      {excerpt}
+    </p>
+
+    <!-- Date -->
+    <div class="flex items-center gap-2 text-xs font-mono" style="color: #71717a;">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="12"
+        height="12"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+        <line x1="16" y1="2" x2="16" y2="6"></line>
+        <line x1="8" y1="2" x2="8" y2="6"></line>
+        <line x1="3" y1="10" x2="21" y2="10"></line>
+      </svg>
+      {formattedDate}
+    </div>
+  </div>
+
+  <!-- Hover accent line -->
+  <div
+    class="absolute bottom-0 left-0 h-0.5 w-0 group-hover:w-full transition-all duration-300"
+    style="background: #a3e635;"
+  >
+  </div>
+</article>
+
+<style>
+  .stretched-link::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+  .text-accent {
+    color: #a3e635;
+  }
+</style>

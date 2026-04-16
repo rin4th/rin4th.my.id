@@ -1,0 +1,220 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import TableOfContents from "@/components/TableOfContents.svelte";
+import WriteupDecrypt from "@/components/WriteupDecrypt.svelte";
+import { getCollection, render } from "astro:content";
+import { createMarkdownProcessor } from "@astrojs/markdown-remark";
+import { webcrypto } from "node:crypto";
+import type { TocHeading } from "@/types";
+
+export async function getStaticPaths() {
+  const writeups = await getCollection("writeup");
+  return writeups.map((writeup) => ({
+    params: { slug: writeup.slug },
+    props: { writeup },
+  }));
+}
+
+const { writeup } = Astro.props;
+const { title, platform, os, difficulty, date, encrypted } = writeup.data;
+const { Content, headings } = await render(writeup);
+
+const formattedDate = new Intl.DateTimeFormat("en-US", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+}).format(date);
+
+const tocHeadings: TocHeading[] = headings
+  .filter((h) => h.depth <= 3)
+  .map((h) => ({
+    depth: h.depth,
+    slug: h.slug,
+    text: h.text,
+  }));
+
+// --- Build-time AES-GCM encryption for encrypted writeups ---
+let encryptedPayload: { ciphertext: string; iv: string; salt: string } | null = null;
+
+if (encrypted) {
+  const password = import.meta.env.WRITEUP_PASSWORD;
+  if (!password) {
+    throw new Error(`WRITEUP_PASSWORD env var is not set. Cannot build encrypted writeup: ${writeup.slug}`);
+  }
+
+  // Render content to HTML string using the markdown processor
+  const processor = await createMarkdownProcessor({
+    syntaxHighlight: "shiki",
+    shikiConfig: { theme: "github-dark" },
+  });
+  const { code: contentHtml } = await processor.render(writeup.body ?? "");
+
+  // Encrypt with AES-GCM
+  const salt = webcrypto.getRandomValues(new Uint8Array(16));
+  const iv = webcrypto.getRandomValues(new Uint8Array(12));
+
+  const keyMaterial = await webcrypto.subtle.importKey(
+    "raw",
+    new TextEncoder().encode(password),
+    "PBKDF2",
+    false,
+    ["deriveKey"],
+  );
+
+  const key = await webcrypto.subtle.deriveKey(
+    { name: "PBKDF2", salt, iterations: 100000, hash: "SHA-256" },
+    keyMaterial,
+    { name: "AES-GCM", length: 256 },
+    false,
+    ["encrypt"],
+  );
+
+  const ciphertextBuf = await webcrypto.subtle.encrypt(
+    { name: "AES-GCM", iv },
+    key,
+    new TextEncoder().encode(contentHtml),
+  );
+
+  const bytesToBase64 = (bytes: Uint8Array) =>
+    btoa(String.fromCharCode(...bytes));
+
+  encryptedPayload = {
+    ciphertext: bytesToBase64(new Uint8Array(ciphertextBuf)),
+    iv: bytesToBase64(iv),
+    salt: bytesToBase64(salt),
+  };
+}
+// -----------------------------------------------------------
+
+const difficultyColors: Record<string, string> = {
+  Easy: "#22c55e",
+  Medium: "#f59e0b",
+  Hard: "#ef4444",
+  Insane: "#a855f7",
+};
+
+const difficultyBg: Record<string, string> = {
+  Easy: "rgba(34,197,94,0.1)",
+  Medium: "rgba(245,158,11,0.1)",
+  Hard: "rgba(239,68,68,0.1)",
+  Insane: "rgba(168,85,247,0.1)",
+};
+
+const platformColors: Record<string, string> = {
+  HackTheBox: "#9fef00",
+  TryHackMe: "#ff0000",
+  PwnTillDawn: "#7c3aed",
+  Other: "#a1a1aa",
+};
+
+const osColor = os === "Linux" ? "#22c55e" : os === "Windows" ? "#3b82f6" : "#f59e0b";
+---
+
+<Layout title={`${title} — Write Up`} description={`${platform} ${difficulty} — ${os} machine writeup by rin4th.`}>
+  <div class="max-w-6xl mx-auto px-4 md:px-6 py-12">
+    <div class="grid grid-cols-1 lg:grid-cols-[1fr_240px] gap-10 items-start">
+      <!-- Main content -->
+      <article class="min-w-0">
+        <!-- Back link -->
+        <a
+          href="/writeup"
+          class="inline-flex items-center gap-1.5 text-sm mb-8 transition-colors duration-200"
+          style="color: #71717a;"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          Back to Write Ups
+        </a>
+
+        <!-- Meta badges -->
+        <div class="flex flex-wrap items-center gap-2 mb-4">
+          <!-- Platform -->
+          <span
+            class="px-2.5 py-1 rounded-lg text-xs font-mono font-medium"
+            style={`color: ${platformColors[platform] ?? '#a1a1aa'}; background: ${platformColors[platform] ?? '#a1a1aa'}18; border: 1px solid ${platformColors[platform] ?? '#a1a1aa'}33;`}
+          >
+            {platform}
+          </span>
+          <!-- OS -->
+          <span
+            class="px-2.5 py-1 rounded-lg text-xs font-mono font-medium"
+            style={`color: ${osColor}; background: ${osColor}18; border: 1px solid ${osColor}33;`}
+          >
+            {os}
+          </span>
+          <!-- Difficulty -->
+          <span
+            class="px-2.5 py-1 rounded-lg text-xs font-mono font-medium"
+            style={`color: ${difficultyColors[difficulty]}; background: ${difficultyBg[difficulty]}; border: 1px solid ${difficultyColors[difficulty]}33;`}
+          >
+            {difficulty}
+          </span>
+        </div>
+
+        <!-- Title -->
+        <h1 class="text-3xl md:text-4xl font-bold mb-3 leading-tight" style="color: #f4f4f5;">
+          {title}
+        </h1>
+
+        <!-- Date -->
+        <div class="flex items-center gap-2 text-sm font-mono mb-8" style="color: #71717a;">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="13"
+            height="13"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          {formattedDate}
+        </div>
+
+        <!-- Divider -->
+        <div class="h-px mb-8" style="background: #333;"></div>
+
+        <!-- Content -->
+        {encryptedPayload ? (
+          <WriteupDecrypt
+            ciphertext={encryptedPayload.ciphertext}
+            iv={encryptedPayload.iv}
+            salt={encryptedPayload.salt}
+            client:load
+          />
+        ) : (
+          <div class="prose max-w-none">
+            <Content />
+          </div>
+        )}
+      </article>
+
+      <!-- Table of Contents (sidebar) — only shown for non-encrypted pages -->
+      {
+        !encrypted && tocHeadings.length > 0 && (
+          <aside class="hidden lg:block">
+            <TableOfContents headings={tocHeadings} client:idle />
+          </aside>
+        )
+      }
+    </div>
+  </div>
+</Layout>

@@ -1,0 +1,27 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import ProjectCard from "@/components/ProjectCard.astro";
+import { getCollection } from "astro:content";
+
+const allProjects = await getCollection("project");
+const projects = allProjects.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+---
+
+<Layout title="Projects" description="Open source projects and tools built by rin4th.">
+  <div class="max-w-6xl mx-auto px-4 md:px-6 py-12">
+    <!-- Header -->
+    <div class="mb-10">
+      <h1 class="text-3xl font-bold mb-2" style="color: #f4f4f5;">
+        <span style="color: #a3e635;">▸</span> Projects
+      </h1>
+      <p style="color: #71717a;">
+        {projects.length} project{projects.length !== 1 ? "s" : ""} — tools, exploits, and experiments.
+      </p>
+    </div>
+
+    <!-- Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      {projects.map((project) => <ProjectCard project={project} />)}
+    </div>
+  </div>
+</Layout>

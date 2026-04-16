@@ -1,0 +1,64 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import NodeStats from "@/components/NodeStats.astro";
+import WriteUpFilter from "@/components/WriteUpFilter.svelte";
+import WriteUpList from "@/components/WriteUpList.svelte";
+import { getCollection } from "astro:content";
+import type { WriteUpEntry, WriteUpGroup, WriteUpPlatform } from "@/types";
+
+const allWriteups = await getCollection("writeup");
+const entries: WriteUpEntry[] = allWriteups
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .map((w) => ({
+    slug: w.slug,
+    title: w.data.title,
+    platform: w.data.platform,
+    os: w.data.os,
+    difficulty: w.data.difficulty,
+    date: w.data.date,
+    encrypted: w.data.encrypted,
+    writeupUrl: w.data.writeupUrl,
+  }));
+
+// Group by platform
+const platformOrder: WriteUpPlatform[] = ["HackTheBox", "TryHackMe", "PwnTillDawn", "Other"];
+const groups: WriteUpGroup[] = platformOrder
+  .map((platform) => ({
+    platform,
+    entries: entries.filter((e) => e.platform === platform),
+  }))
+  .filter((g) => g.entries.length > 0);
+
+const totalWriteups = entries.length;
+---
+
+<Layout title="Write Up" description="CTF and machine writeups by rin4th.">
+  <div class="max-w-6xl mx-auto px-4 md:px-6 py-12">
+    <!-- Header -->
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold mb-2" style="color: #f4f4f5;">
+        <span style="color: #a3e635;">▸</span> Write Up
+      </h1>
+      <p style="color: #71717a;">Machine writeups from various platforms.</p>
+    </div>
+
+    <!-- Mobile: top filter bar -->
+    <div class="lg:hidden mb-6">
+      <WriteUpFilter client:load />
+    </div>
+
+    <!-- Two-column layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-6 items-start">
+      <!-- Left sidebar (desktop) -->
+      <aside class="hidden lg:flex flex-col gap-4 sticky top-24">
+        <NodeStats totalWriteups={totalWriteups} />
+        <WriteUpFilter client:load />
+      </aside>
+
+      <!-- Right content -->
+      <div class="min-w-0">
+        <WriteUpList groups={groups} client:load />
+      </div>
+    </div>
+  </div>
+</Layout>

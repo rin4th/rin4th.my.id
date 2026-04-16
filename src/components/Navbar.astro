@@ -1,127 +1,60 @@
 ---
-import { Icon } from "astro-icon";
-import '../styles/global.css'
+import MobileMenu from "./MobileMenu.svelte";
 
-type Route = {
-	name: string;
-	path: string;
-	icon: string;
-    status: {
-        active: string;
-        inactive: string;
-    }
-};
-
-const routes: Route[] = [
-	{
-		name: "Home",
-		path: "/",
-		icon: "ic:round-home",
-        status: {
-            active: "text-cyan-200",
-            inactive: "text-white",
-        },
-	},
-	{
-		name: "Post",
-		path: "/posts/",
-		icon: "ic:baseline-article",
-        status: {
-            active: "text-cyan-200",
-            inactive: "text-white",
-        },
-	},
-	{
-		name: "Project",
-		path: "/projects/",
-		icon: "ph:file-code-fill",
-        status: {
-            active: "text-cyan-200",
-            inactive: "text-white",
-        },
-	},
-    {
-        name: "Book",
-        path: "/books/",
-        icon: "ic:round-library-books",
-        status: {
-            active: "text-cyan-200",
-            inactive: "text-white",
-        },
-    },
-	{
-		name: "About",
-		path: "/about/",
-		icon: "mdi:about",
-        status: {
-            active: "text-cyan-200",
-            inactive: "text-white",
-        },
-	},
+const navLinks = [
+  { label: "Home", href: "/" },
+  { label: "Blog", href: "/blog" },
+  { label: "Write Up", href: "/writeup" },
+  { label: "Project", href: "/project" },
+  { label: "About", href: "/about" },
 ];
+
+const currentPath = Astro.url.pathname;
 ---
-<div class="mb-5">
-    <div class="md:static fixed top-4 right-4 z-50">
-        {/* Mobile hamburger trigger */}
-        <button
-            id="nav-toggle"
-            class="md:hidden group grid place-items-center h-10 w-10 rounded bg-front-dark text-white border-2 border-transparent transition-[color_ease-out_0.2s] hover:text-cyan-200 focus-visible:(outline-none ring-2 ring-cyan-200)"
-            aria-controls="main-nav"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-            type="button"
-        >
-            <span class="sr-only">Open main menu</span>
-            <span class="nav-toggle-icon" aria-hidden="true">
-                <span class="nav-toggle-line nav-toggle-line-1"></span>
-                <span class="nav-toggle-line nav-toggle-line-2"></span>
-            </span>
-        </button>
 
-        <nav
-            id="main-nav"
-            class="md:min-w-60 min-w-0 rounded bg-front-dark md:min-h-full md:block hidden md:mt-0 md:static fixed top-16 right-4 left-4 h-1/2 z-40 border border-white/50 overflow-auto"
-        >
-            <ul class="p-6 m-0 list-none flex flex-col items-stretch justify-center gap-4 h-full md:p-3 md:justify-start md:gap-0">
-                {
-                    routes.map((route) => {
-                        const isRouteActive = Astro.url.pathname === route.path;
-                        return (
-                            <li class="w-full">
-                                <a 
-                                    aria-label={route.name} 
-                                    href={route.path}
-                                    class="no-underline block w-full"
-                                >
-                                    <div class="text-white px-2 font-bold rounded border-dashed border-white border-2 text-lg mt-2 hover:text-cyan-200">
-                                        <div class="flex flex-row gap-x-2 justify-start">
-                                            <Icon name={route.icon} class={isRouteActive ? route.status.active + " h-7 w-7" : route.status.inactive + " h-7 w-7"} />{route.name}
-                                        </div>
-                                    </div>
-                                </a>
-                            </li>
-                        );
-                    })
+<header
+  class="sticky top-0 z-50 border-b"
+  style="background-color: rgba(30,30,30,0.92); backdrop-filter: blur(12px); border-color: #333;"
+>
+  <nav class="max-w-6xl mx-auto px-4 md:px-6 flex items-center justify-between h-16">
+    <!-- Logo -->
+    <a
+      href="/"
+      class="font-mono font-bold text-lg tracking-tight flex items-center gap-1.5"
+      style="color: #a3e635;"
+    >
+      <span style="color: #a1a1aa;">~/</span>rin4th
+    </a>
+
+    <!-- Desktop Nav -->
+    <ul class="hidden md:flex items-center gap-1">
+      {
+        navLinks.map((link) => {
+          const isActive =
+            link.href === "/"
+              ? currentPath === "/"
+              : currentPath.startsWith(link.href);
+          return (
+            <li>
+              <a
+                href={link.href}
+                class="px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
+                style={
+                  isActive
+                    ? "color: #a3e635; background-color: rgba(163,230,53,0.1);"
+                    : "color: #a1a1aa;"
                 }
-            </ul>
-        </nav>
-    </div>
-</div>
+                aria-current={isActive ? "page" : undefined}
+              >
+                {link.label}
+              </a>
+            </li>
+          );
+        })
+      }
+    </ul>
 
-<script>
-    // Toggle mobile visibility for the main nav
-    const toggleBtn = document.getElementById('nav-toggle');
-    const mainNav = document.getElementById('main-nav');
-    if (toggleBtn && mainNav) {
-        toggleBtn.addEventListener('click', () => {
-            const isHidden = mainNav.classList.contains('hidden');
-            if (isHidden) {
-                mainNav.classList.remove('hidden');
-                toggleBtn.setAttribute('aria-expanded', 'true');
-            } else {
-                mainNav.classList.add('hidden');
-                toggleBtn.setAttribute('aria-expanded', 'false');
-            }
-        });
-    }
-</script>
+    <!-- Mobile Menu Button -->
+    <MobileMenu navLinks={navLinks} client:load />
+  </nav>
+</header>
