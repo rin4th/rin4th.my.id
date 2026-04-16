@@ -198,7 +198,7 @@ const osColor = os === "Linux" ? "#22c55e" : os === "Windows" ? "#3b82f6" : "#f5
             ciphertext={encryptedPayload.ciphertext}
             iv={encryptedPayload.iv}
             salt={encryptedPayload.salt}
-            client:load
+            client:only="svelte"
           />
         ) : (
           <div class="prose max-w-none">
