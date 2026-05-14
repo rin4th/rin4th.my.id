@@ -1,0 +1,87 @@
+<div
+  id="now-playing"
+  class="hidden w-full max-w-sm rounded-2xl border p-3 backdrop-blur-md transition-all duration-300"
+  style="
+    border-color: rgba(163,230,53,0.18);
+    background:
+      linear-gradient(135deg, rgba(163,230,53,0.09), rgba(37,37,37,0.82) 42%, rgba(24,24,24,0.92)),
+      radial-gradient(circle at 16% 20%, rgba(163,230,53,0.14), transparent 32%);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.04);
+  "
+  aria-live="polite"
+>
+  <a id="now-playing-link" class="group flex items-center gap-3" href="#" target="_blank" rel="noopener noreferrer">
+    <div class="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl border" style="border-color: rgba(163,230,53,0.2); background: #252525;">
+      <img id="now-playing-art" class="h-full w-full object-cover" src="" alt="" loading="lazy" />
+      <div class="absolute inset-0" style="box-shadow: inset 0 0 24px rgba(0,0,0,0.35);"></div>
+    </div>
+
+    <div class="min-w-0 flex-1">
+      <div class="mb-1 flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.22em]" style="color: #a3e635;">
+        <span class="relative flex h-2 w-2">
+          <span class="absolute inline-flex h-full w-full animate-ping rounded-full opacity-60" style="background: #a3e635;"></span>
+          <span class="relative inline-flex h-2 w-2 rounded-full" style="background: #a3e635;"></span>
+        </span>
+        Now playing
+      </div>
+      <p id="now-playing-title" class="truncate text-sm font-bold transition-colors group-hover:text-accent" style="color: #f4f4f5;"></p>
+      <p id="now-playing-artist" class="truncate text-xs" style="color: #a1a1aa;"></p>
+    </div>
+
+    <svg class="h-4 w-4 shrink-0 opacity-60 transition-transform group-hover:translate-x-0.5" style="color: #a3e635;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M7 17 17 7"></path>
+      <path d="M7 7h10v10"></path>
+    </svg>
+  </a>
+</div>
+
+<script>
+  type NowPlayingResponse = {
+    isPlaying: boolean;
+    title?: string;
+    artist?: string;
+    albumArt?: string | null;
+    url?: string | null;
+  };
+
+  const widget = document.getElementById("now-playing");
+  const link = document.getElementById("now-playing-link") as HTMLAnchorElement | null;
+  const art = document.getElementById("now-playing-art") as HTMLImageElement | null;
+  const title = document.getElementById("now-playing-title");
+  const artist = document.getElementById("now-playing-artist");
+
+  async function loadNowPlaying() {
+    if (!widget || !link || !art || !title || !artist) return;
+
+    try {
+      const response = await fetch("/api/lastfm", {
+        headers: { Accept: "application/json" },
+      });
+      const data = (await response.json()) as NowPlayingResponse;
+
+      if (!data.isPlaying || !data.title || !data.artist) {
+        widget.classList.add("hidden");
+        return;
+      }
+
+      title.textContent = data.title;
+      artist.textContent = data.artist;
+      link.href = data.url || "https://www.last.fm/";
+
+      if (data.albumArt) {
+        art.src = data.albumArt;
+        art.classList.remove("hidden");
+      } else {
+        art.removeAttribute("src");
+        art.classList.add("hidden");
+      }
+
+      widget.classList.remove("hidden");
+    } catch {
+      widget?.classList.add("hidden");
+    }
+  }
+
+  loadNowPlaying();
+  window.setInterval(loadNowPlaying, 30000);
+</script>

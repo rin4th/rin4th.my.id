@@ -1,9 +1,16 @@
+.wrangler/
 dist/
 .output/
 .astro/
 node_modules/
 npm-debug.log*
 .env
-.env.production
+.env.*
+!.env.example
+!.env.*.example
+.dev.vars
+.dev.vars.*
+wrangler.toml
 .DS_Store
 .claude/
+.mcp.json.example
