@@ -30,6 +30,7 @@
     HackTheBox: "#9fef00",
     TryHackMe: "#ff0000",
     PwnTillDawn: "#7c3aed",
+    OffSec: "#a855f7",
     Other: "#a1a1aa",
   };
 

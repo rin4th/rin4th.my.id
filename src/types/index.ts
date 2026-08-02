@@ -8,7 +8,7 @@ export type BlogPostData = BlogPost["data"];
 export type WriteUpData = WriteUp["data"];
 export type ProjectData = Project["data"];
 
-export type WriteUpPlatform = "HackTheBox" | "TryHackMe" | "PwnTillDawn" | "Other";
+export type WriteUpPlatform = "HackTheBox" | "TryHackMe" | "PwnTillDawn" | "OffSec" | "Other";
 export type WriteUpOS = "Linux" | "Windows" | "Active Directory" | "Other";
 export type WriteUpDifficulty = "Easy" | "Medium" | "Hard" | "Insane";
 

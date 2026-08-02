@@ -16,7 +16,7 @@ const writeupCollection = defineCollection({
   type: "content",
   schema: z.object({
     title: z.string(),
-    platform: z.enum(["HackTheBox", "TryHackMe", "PwnTillDawn", "Other"]),
+    platform: z.enum(["HackTheBox", "TryHackMe", "PwnTillDawn", "OffSec", "Other"]),
     os: z.enum(["Linux", "Windows", "Active Directory", "Other"]),
     difficulty: z.enum(["Easy", "Medium", "Hard", "Insane"]),
     date: z.coerce.date(),
