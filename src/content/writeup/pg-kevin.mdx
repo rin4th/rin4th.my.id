@@ -16,29 +16,93 @@ Forest is a Windows Server 2019 Domain Controller on HackTheBox. The path covers
 ### Port Scan
 
 ```bash
-nmap 192.168.205.45 -sC -sV -p 80,135,139,445,3389,3573 -oN nmap.txt
+$ nmap 192.168.154.175 -p 53,88,135,139,389,445,464,593,636,3268,3269,3389,5985,9389 -sC -sV -oN nmap.txt
 ```
 
 ```
-PORT     STATE SERVICE      VERSION
-80/tcp   open  http         GoAhead WebServer (WAP http config)
-| http-title: HP Power Manager
-|_Requested resource was http://192.168.205.45/index.asp
-135/tcp  open  msrpc        Microsoft Windows RPC
-139/tcp  open  netbios-ssn  Microsoft Windows netbios-ssn
-445/tcp  open  microsoft-ds Windows 7 Ultimate N 7600 microsoft-ds
-3389/tcp open  tcpwrapped
+PORT     STATE SERVICE       VERSION
+53/tcp   open  domain        Simple DNS Plus
+88/tcp   open  kerberos-sec  Microsoft Windows Kerberos (server time: 2026-08-07 09:57:48Z)
+135/tcp  open  msrpc         Microsoft Windows RPC
+139/tcp  open  netbios-ssn   Microsoft Windows netbios-ssn
+389/tcp  open  ldap          Microsoft Windows Active Directory LDAP (Domain: resourced.local, Site: Default-First-Site-Name)
+445/tcp  open  microsoft-ds?
+464/tcp  open  kpasswd5?
+593/tcp  open  ncacn_http    Microsoft Windows RPC over HTTP 1.0
+636/tcp  open  tcpwrapped
+3268/tcp open  ldap          Microsoft Windows Active Directory LDAP (Domain: resourced.local, Site: Default-First-Site-Name)
+3269/tcp open  tcpwrapped
+3389/tcp open  ms-wbt-server Microsoft Terminal Services
+|_ssl-date: 2026-08-07T09:58:30+00:00; +1m04s from scanner time.
 | rdp-ntlm-info: 
-|   Target_Name: KEVIN
-|   NetBIOS_Domain_Name: KEVIN
-|   NetBIOS_Computer_Name: KEVIN
-|   DNS_Domain_Name: kevin
-|   DNS_Computer_Name: kevin
-|   Product_Version: 6.1.7600
-|_  System_Time: 2026-08-02T09:06:54+00:00
-3573/tcp open  tag-ups-1?
-Service Info: OS: Windows; Device: WAP; CPE: cpe:/o:microsoft:windows
+|   Target_Name: resourced
+|   NetBIOS_Domain_Name: resourced
+|   NetBIOS_Computer_Name: RESOURCEDC
+|   DNS_Domain_Name: resourced.local
+|   DNS_Computer_Name: ResourceDC.resourced.local
+|   DNS_Tree_Name: resourced.local
+|   Product_Version: 10.0.17763
+|_  System_Time: 2026-08-07T09:57:50+00:00
+| ssl-cert: Subject: commonName=ResourceDC.resourced.local
+| Not valid before: 2026-08-06T09:52:50
+|_Not valid after:  2027-02-05T09:52:50
+5985/tcp open  http          Microsoft HTTPAPI httpd 2.0 (SSDP/UPnP)
+|_http-title: Not Found
+|_http-server-header: Microsoft-HTTPAPI/2.0
+9389/tcp open  mc-nmf        .NET Message Framing
+Service Info: Host: RESOURCEDC; OS: Windows; CPE: cpe:/o:microsoft:windows
 ```
+
+### RPC Enumeration
+
+```bash
+$ rpcclient -U "" -N 192.168.154.175
+rpcclient $> enumdomusers
+user:[Administrator] rid:[0x1f4]
+user:[Guest] rid:[0x1f5]
+user:[krbtgt] rid:[0x1f6]
+user:[M.Mason] rid:[0x44f]
+user:[K.Keen] rid:[0x450]
+user:[L.Livingstone] rid:[0x451]
+user:[J.Johnson] rid:[0x452]
+user:[V.Ventz] rid:[0x453]
+user:[S.Swanson] rid:[0x454]
+user:[P.Parker] rid:[0x455]
+user:[R.Robinson] rid:[0x456]
+user:[D.Durant] rid:[0x457]
+user:[G.Goldberg] rid:[0x458]
+
+rpcclient $> queryuser 0x453
+        User Name   :   V.Ventz
+        Full Name   :
+        Home Drive  :
+        Dir Drive   :
+        Profile Path:
+        Logon Script:
+        Description :   New-hired, reminder: HotelCalifornia194!
+        Workstations:
+        Comment     :
+        Remote Dial :
+        Logon Time               :      Thu, 01 Jan 1970 07:00:00 WIB
+        Logoff Time              :      Thu, 01 Jan 1970 07:00:00 WIB
+        Kickoff Time             :      Thu, 14 Sep 30828 09:48:05 WIB
+        Password last set Time   :      Fri, 01 Oct 2021 18:14:52 WIB
+        Password can change Time :      Sat, 02 Oct 2021 18:14:52 WIB
+        Password must change Time:      Thu, 14 Sep 30828 09:48:05 WIB
+        unknown_2[0..31]...
+        user_rid :      0x453
+        group_rid:      0x201
+        acb_info :      0x00000210
+        fields_present: 0x00ffffff
+        logon_divs:     168
+        bad_password_count:     0x00000000
+        logon_count:    0x00000000
+        padding1[0..7]...
+        logon_hrs[0..21]...
+
+```
+
+Based on RPC enumeration, it show passowrd on Description on user V.Ventz
 
 ### Web Enumeration
 
