@@ -1,43 +1,29 @@
 ---
-title: "Resourced"
+title: "Squi"
 platform: "OffSec"
-os: "Active Directory"
-difficulty: "Medium"
-date: 2026-08-07
+os: "Windows"
+difficulty: "Easy"
+date: 2026-08-12
 encrypted: false
 ---
-
-[cve-2009-2685]: https://github.com/CountablyInfinite/HP-Power-Manager-Buffer-Overflow-Python3
-
-Forest is a Windows Server 2019 Domain Controller on HackTheBox. The path covers null-session RPC enumeration, AS-REP Roasting, BloodHound AD analysis, and ultimately DCSync via an `Exchange Windows Permissions` WriteDacl abuse chain.
 
 ## Enumeration
 
 ### Port Scan
 
 ```bash
-nmap 192.168.205.45 -sC -sV -p 80,135,139,445,3389,3573 -oN nmap.txt
+$ nmap 192.168.230.189 -p 135,139,445,3128 -sC -sV -oN nmap.txt
 ```
 
 ```
-PORT     STATE SERVICE      VERSION
-80/tcp   open  http         GoAhead WebServer (WAP http config)
-| http-title: HP Power Manager
-|_Requested resource was http://192.168.205.45/index.asp
-135/tcp  open  msrpc        Microsoft Windows RPC
-139/tcp  open  netbios-ssn  Microsoft Windows netbios-ssn
-445/tcp  open  microsoft-ds Windows 7 Ultimate N 7600 microsoft-ds
-3389/tcp open  tcpwrapped
-| rdp-ntlm-info: 
-|   Target_Name: KEVIN
-|   NetBIOS_Domain_Name: KEVIN
-|   NetBIOS_Computer_Name: KEVIN
-|   DNS_Domain_Name: kevin
-|   DNS_Computer_Name: kevin
-|   Product_Version: 6.1.7600bu
-|_  System_Time: 2026-08-02T09:06:54+00:00
-3573/tcp open  tag-ups-1?
-Service Info: OS: Windows; Device: WAP; CPE: cpe:/o:microsoft:windows
+PORT     STATE SERVICE       VERSION
+135/tcp  open  msrpc         Microsoft Windows RPC
+139/tcp  open  netbios-ssn   Microsoft Windows netbios-ssn
+445/tcp  open  microsoft-ds?
+3128/tcp open  http-proxy    Squid http proxy 4.14
+|_http-server-header: squid/4.14
+|_http-title: ERROR: The requested URL could not be retrieved
+Service Info: OS: Windows; CPE: cpe:/o:microsoft:windows
 ```
 
 ### RPC Enumeration
