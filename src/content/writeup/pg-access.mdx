@@ -5,6 +5,7 @@ os: "Windows"
 difficulty: "Easy"
 date: 2026-04-06
 encrypted: false
+keyword: []
 ---
 
 Forest is a Windows Server 2019 Domain Controller on HackTheBox. The path covers null-session RPC enumeration, AS-REP Roasting, BloodHound AD analysis, and ultimately DCSync via an `Exchange Windows Permissions` WriteDacl abuse chain.
@@ -116,4 +117,3 @@ impacket-psexec -hashes :32693b11e6aa90eb43d32c72a07ceea6 administrator@10.10.10
 | Foothold | AS-REP Roasting + hashcat |
 | Access | Evil-WinRM |
 | PrivEsc | BloodHound → WriteDacl → DCSync → PTH |
-

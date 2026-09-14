@@ -22,6 +22,7 @@ const writeupCollection = defineCollection({
     date: z.coerce.date(),
     encrypted: z.boolean().default(true),
     writeupUrl: z.string().optional(),
+    keyword: z.array(z.string()).default([]),
   }),
 });
 

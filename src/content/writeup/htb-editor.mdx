@@ -1,0 +1,155 @@
+---
+title: "Editor"
+platform: "HackTheBox"
+os: "Linux"
+difficulty: "Easy"
+date: 2026-09-14
+encrypted: false
+keyword: ["xwiki", "grepPass", "SUID exploit", "netdata"]
+---
+
+[cve-2025-24893]: https://github.com/a1baradi/Exploit/blob/main/CVE-2025-24893.py
+[cve-2024-32019]: https://github.com/T1erno/CVE-2024-32019-Netdata-ndsudo-Privilege-Escalation-PoC
+
+Editor is an easy-difficulty Linux machine that focuses on web application exploitation followed by local privilege escalation. Initial enumeration reveals a web application exposing an XWiki instance, which is identified as vulnerable to [CVE-2025-24893](https://nvd.nist.gov/vuln/detail/CVE-2025-24893), a remote code execution flaw in the SolrSearch endpoint. By adapting a public proof-of-concept, Groovy code injection is achieved, allowing arbitrary command execution and providing a shell as the xwiki user. Post-exploitation enumeration of the system reveals additional local users and misconfigurations that allow lateral movement to the user oliver. Further analysis of the system uncovers a privilege escalation vector involving a misconfigured SUID binary that relies on environment-controlled execution. By abusing PATH manipulation, a malicious binary is executed in place of a trusted system binary, resulting in execution with elevated privileges and ultimately granting root access.
+
+## Enumeration
+
+### Port Scan
+
+```bash
+nmap 10.129.10.149 -p 22,80,8080 -sCV -oN nmap.txt
+```
+
+```
+PORT     STATE SERVICE VERSION
+22/tcp   open  ssh     OpenSSH 8.9p1 Ubuntu 3ubuntu0.13 (Ubuntu Linux; protocol 2.0)
+| ssh-hostkey: 
+|   256 3e:ea:45:4b:c5:d1:6d:6f:e2:d4:d1:3b:0a:3d:a9:4f (ECDSA)
+|_  256 64:cc:75:de:4a:e6:a5:b4:73:eb:3f:1b:cf:b4:e3:94 (ED25519)
+80/tcp   open  http    nginx 1.18.0 (Ubuntu)
+|_http-title: Editor - SimplistCode Pro
+|_http-server-header: nginx/1.18.0 (Ubuntu)
+8080/tcp open  http    Jetty 10.0.20
+| http-webdav-scan: 
+|   Allowed Methods: OPTIONS, GET, HEAD, PROPFIND, LOCK, UNLOCK
+|   WebDAV type: Unknown
+|_  Server Type: Jetty(10.0.20)
+|_http-server-header: Jetty(10.0.20)
+| http-title: XWiki - Main - Intro
+|_Requested resource was http://editor.htb:8080/xwiki/bin/view/Main/
+| http-cookie-flags: 
+|   /: 
+|     JSESSIONID: 
+|_      httponly flag not set
+| http-robots.txt: 50 disallowed entries (15 shown)
+| /xwiki/bin/viewattachrev/ /xwiki/bin/viewrev/ 
+| /xwiki/bin/pdf/ /xwiki/bin/edit/ /xwiki/bin/create/ 
+| /xwiki/bin/inline/ /xwiki/bin/preview/ /xwiki/bin/save/ 
+| /xwiki/bin/saveandcontinue/ /xwiki/bin/rollback/ /xwiki/bin/deleteversions/ 
+| /xwiki/bin/cancel/ /xwiki/bin/delete/ /xwiki/bin/deletespace/ 
+|_/xwiki/bin/undelete/
+| http-methods: 
+|_  Potentially risky methods: PROPFIND LOCK UNLOCK
+|_http-open-proxy: Proxy might be redirecting requests
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+```
+
+### Web Enumeration
+
+From the web service there's information that tell about engine version used by the website, it tells that the version XWiki 2.1
+
+![XWiki](public\assets\writeup\editor\web.png)
+
+## Initial Access
+
+Found the public exploit on [github][cve-2025-24893], then edit the exploit so it can reverse shell and add `/xwiki` path so it can be used for the web
+
+![CVE](public\assets\writeup\editor\cve.png)
+
+First, run the penelope to listen our reverse shell
+
+```bash
+$ penelope
+```
+
+Then run the payload
+
+```bash
+python3 cve-2025-24893.py
+```
+
+![cve2](public\assets\writeup\editor\cve2.png)
+
+After run the payload, lookup on the penelope. it will give interactive shell of xwiki user
+
+![term](public\assets\writeup\editor\xwiki_term.png)
+
+## Privilege Escalation Horizontal
+
+Since our user isn't on home directory, what we have to do first is privilege to user oliver
+
+![user_oliver](public\assets\writeup\editor\oliver.png)
+
+I made my own script to find every file that contain string password
+
+![grepPass](public\assets\writeup\editor\grepPass.png)
+
+then Upload to /tmp folder, but we have to setup http server first so victim machine could download it
+
+![httpserver](public\assets\writeup\editor\httpserver.png)
+
+then download it from victim machine, after download make it excuteable then run the code
+
+![runGrep](public\assets\writeup\editor\foundCreds.png)
+
+on /etc/xwiki/hibernate.cfg.xml it give passowrd that we could try 
+
+![oliver_pwn](public\assets\writeup\editor\pwnoliver.png)
+
+successfully pawnd user oliver
+
+**User flag** → `/home/oliver/user.txt`
+
+## Privilege Escalation
+
+Find every executeable file that has bit active SUID in the system
+
+```bash
+$ find / -perm -u=s -type f 2>/dev/null
+```
+
+![ndsudo_binary](public\assets\writeup\editor\netdata.png)
+
+Seach on google, it tells that there's netdata binary that we can run
+
+![cve-netdata](public\assets\writeup\editor\searchnetdata.png)
+
+Found public exploit from [github][cve-2024-32019] that we can use. To use the public exploit weh have to compile the payload first
+
+```bash
+$ gcc -static payload.c -o nvme -Wall -Werror -Wpedantic
+```
+
+![compile_nvme](public\assets\writeup\editor\compile_nvme.png)
+
+Then upload both file to victim machine
+
+![upload_nvme](public\assets\writeup\editor\upload_nvme.png)
+
+![dwn_nvme](public\assets\writeup\editor\dwn_nvme.png)
+
+then run the bash script to run the payload
+
+![pwn_root](public\assets\writeup\editor\pwn_root.png)
+
+**Root flag** → `/root/root.txt`
+
+## Summary
+
+| Step | Technique / Target | Details |
+| :--- | :--- | :--- |
+| **Enumeration** | Port Scanning | Found Open Ports: SSH (22), Web (80), Web (8080) |
+| **Initial Access** | Web 8080 (XWiki 2.1) | Exploited **CVE-2025-24893** → Got initial shell (`xwiki`) |
+| **PrivEsc (Horizontal)** | Internal Enumeration | Executed `grepPass` → Found credentials for user `oliver` |
+| **PrivEsc (Vertical)** | SUID Exploitation | Exploited SUID binary `ndsudo` (**CVE-2024-32019**) → Got `root` shell |

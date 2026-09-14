@@ -10,6 +10,7 @@
 
   type OSFilter = WriteUpOS | "All";
   let activeOsFilter = $state<OSFilter>("All");
+  let keywordQuery = $state("");
   let expandedPlatforms = $state<Set<string>>(new Set(groups.map((g) => g.platform)));
 
   const difficultyColors: Record<string, string> = {
@@ -35,14 +36,28 @@
   };
 
   const filteredGroups = $derived.by(() => {
-    if (activeOsFilter === "All") return groups;
+    const normalizedQuery = keywordQuery.trim().toLocaleLowerCase();
+
     return groups
       .map((g) => ({
         ...g,
-        entries: g.entries.filter((e) => e.os === activeOsFilter),
+        entries: g.entries.filter((e) => {
+          const matchesOs = activeOsFilter === "All" || e.os === activeOsFilter;
+          const matchesKeyword =
+            normalizedQuery === "" ||
+            e.keyword.some((keyword) =>
+              keyword.toLocaleLowerCase().includes(normalizedQuery),
+            );
+
+          return matchesOs && matchesKeyword;
+        }),
       }))
       .filter((g) => g.entries.length > 0);
   });
+
+  const filteredEntryCount = $derived(
+    filteredGroups.reduce((total, group) => total + group.entries.length, 0),
+  );
 
   function togglePlatform(platform: string) {
     const next = new Set(expandedPlatforms);
@@ -73,11 +88,57 @@
 </script>
 
 <div class="space-y-4">
+  <div
+    class="rounded-xl border p-4"
+    style="background: #252525; border-color: #333;"
+  >
+    <label
+      for="writeup-keyword-search"
+      class="block text-xs font-mono font-semibold tracking-widest uppercase mb-3"
+      style="color: #a3e635;"
+    >
+      Search by keyword
+    </label>
+    <div class="relative">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
+        style="color: #71717a;"
+        aria-hidden="true"
+      >
+        <circle cx="11" cy="11" r="8"></circle>
+        <path d="m21 21-4.3-4.3"></path>
+      </svg>
+      <input
+        id="writeup-keyword-search"
+        type="search"
+        bind:value={keywordQuery}
+        placeholder="e.g. asreproast, mssql, dcsync"
+        autocomplete="off"
+        class="w-full rounded-lg py-2.5 pl-10 pr-3 text-sm outline-none transition-colors duration-200"
+        style="background: #1f1f1f; border: 1px solid #3d3d3d; color: #f4f4f5; font-family: inherit;"
+      />
+    </div>
+    {#if keywordQuery.trim()}
+      <p class="text-xs mt-2" style="color: #71717a;">
+        {filteredEntryCount} {filteredEntryCount === 1 ? "writeup" : "writeups"} found
+      </p>
+    {/if}
+  </div>
+
   {#if filteredGroups.length === 0}
     <div class="text-center py-16 rounded-xl border" style="background: #252525; border-color: #333;">
       <p class="text-xl mb-2">🔍</p>
       <p class="font-medium mb-1" style="color: #f4f4f5;">No writeups found</p>
-      <p class="text-sm" style="color: #71717a;">Try a different OS filter.</p>
+      <p class="text-sm" style="color: #71717a;">Try a different keyword or OS filter.</p>
     </div>
   {:else}
     {#each filteredGroups as group}
@@ -160,6 +221,18 @@
                   <p class="text-xs mt-0.5" style="color: #71717a;">
                     {entry.os} · {formatDate(entry.date)}
                   </p>
+                  {#if entry.keyword.length > 0}
+                    <div class="flex flex-wrap gap-1.5 mt-2">
+                      {#each entry.keyword as keyword}
+                        <span
+                          class="text-xs font-mono px-1.5 py-0.5 rounded"
+                          style="background: rgba(163,230,53,0.06); color: #a1a1aa; border: 1px solid #3d3d3d;"
+                        >
+                          #{keyword}
+                        </span>
+                      {/each}
+                    </div>
+                  {/if}
                 </div>
 
                 <!-- Action column -->

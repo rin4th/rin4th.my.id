@@ -32,6 +32,7 @@ export interface WriteUpEntry {
   date: Date;
   encrypted: boolean;
   writeupUrl?: string | undefined;
+  keyword: string[];
 }
 
 export interface WriteUpGroup {
