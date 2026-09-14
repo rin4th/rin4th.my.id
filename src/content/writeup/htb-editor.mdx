@@ -59,13 +59,13 @@ Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 
 From the web service there's information that tell about engine version used by the website, it tells that the version XWiki 2.1
 
-![XWiki](public\assets\writeup\editor\web.png)
+![XWiki](/assets/writeup/editor/web.png)
 
 ## Initial Access
 
 Found the public exploit on [github][cve-2025-24893], then edit the exploit so it can reverse shell and add `/xwiki` path so it can be used for the web
 
-![CVE](public\assets\writeup\editor\cve.png)
+![CVE](/assets/writeup/editor/cve.png)
 
 First, run the penelope to listen our reverse shell
 
@@ -79,33 +79,33 @@ Then run the payload
 python3 cve-2025-24893.py
 ```
 
-![cve2](public\assets\writeup\editor\cve2.png)
+![cve2](/assets/writeup/editor/cve2.png)
 
 After run the payload, lookup on the penelope. it will give interactive shell of xwiki user
 
-![term](public\assets\writeup\editor\xwiki_term.png)
+![term](/assets/writeup/editor/xwiki_term.png)
 
 ## Privilege Escalation Horizontal
 
 Since our user isn't on home directory, what we have to do first is privilege to user oliver
 
-![user_oliver](public\assets\writeup\editor\oliver.png)
+![user_oliver](/assets/writeup/editor/oliver.png)
 
 I made my own script to find every file that contain string password
 
-![grepPass](public\assets\writeup\editor\grepPass.png)
+![grepPass](/assets/writeup/editor/grepPass.png)
 
 then Upload to /tmp folder, but we have to setup http server first so victim machine could download it
 
-![httpserver](public\assets\writeup\editor\httpserver.png)
+![httpserver](/assets/writeup/editor/httpserver.png)
 
 then download it from victim machine, after download make it excuteable then run the code
 
-![runGrep](public\assets\writeup\editor\foundCreds.png)
+![runGrep](/assets/writeup/editor/foundCreds.png)
 
 on /etc/xwiki/hibernate.cfg.xml it give passowrd that we could try 
 
-![oliver_pwn](public\assets\writeup\editor\pwnoliver.png)
+![oliver_pwn](/assets/writeup/editor/pwnoliver.png)
 
 successfully pawnd user oliver
 
@@ -119,11 +119,11 @@ Find every executeable file that has bit active SUID in the system
 $ find / -perm -u=s -type f 2>/dev/null
 ```
 
-![ndsudo_binary](public\assets\writeup\editor\netdata.png)
+![ndsudo_binary](/assets/writeup/editor/netdata.png)
 
 Seach on google, it tells that there's netdata binary that we can run
 
-![cve-netdata](public\assets\writeup\editor\searchnetdata.png)
+![cve-netdata](/assets/writeup/editor/searchnetdata.png)
 
 Found public exploit from [github][cve-2024-32019] that we can use. To use the public exploit weh have to compile the payload first
 
@@ -131,17 +131,17 @@ Found public exploit from [github][cve-2024-32019] that we can use. To use the p
 $ gcc -static payload.c -o nvme -Wall -Werror -Wpedantic
 ```
 
-![compile_nvme](public\assets\writeup\editor\compile_nvme.png)
+![compile_nvme](/assets/writeup/editor/compile_nvme.png)
 
 Then upload both file to victim machine
 
-![upload_nvme](public\assets\writeup\editor\upload_nvme.png)
+![upload_nvme](/assets/writeup/editor/upload_nvme.png)
 
-![dwn_nvme](public\assets\writeup\editor\dwn_nvme.png)
+![dwn_nvme](/assets/writeup/editor/dwn_nvme.png)
 
 then run the bash script to run the payload
 
-![pwn_root](public\assets\writeup\editor\pwn_root.png)
+![pwn_root](/assets/writeup/editor/pwn_root.png)
 
 **Root flag** → `/root/root.txt`
 
